@@ -1,0 +1,60 @@
+Customer Relationship Management (CRM)
+Pr1
+CRM will be developed by a team of 4 using Yii framework
+Own1
+W 4 P 3 N 2 A 1
+
+Cloud Engineer
+Pr10
+Opportunity to experience software development of large scale system on cloud platforms.
+Own10
+W 4 P 2 N 1 A 3
+
+App Developement
+Pr2
+An cross-platform app will be developed by team of 4 using either Angular or react native
+Own2
+W 2 P 3 N 4 A 1
+
+Mobile App Development
+Pr3
+New mobile application to be developed for product promotion.
+Own3
+W 1 P 2 N 3 A 4
+
+E-Commerce New Payment Gateway Integration
+Pr4
+New payment gateway to be integrated with existing e-commerce solution for all platforms
+Own4
+W 3 P 4 N 2 A 1
+
+Brand Website Development
+Pr5
+New website to be developed for newly opened location
+Own5
+W 3 P 4 N 2 A 1
+
+Performance Analysis of existing system
+Pr6
+No Description Available
+Own6
+W 3 P 4 N 2 A 1
+
+Product Design
+Pr7
+No Description Available
+Own7
+W 3 P 4 N 2 A 1
+
+AWS Developer
+Pr8
+Opportunity to experience software development of large scale system on AWS platform.
+Own8
+W 1 P 2 N 4 A 3
+
+Automation Testing
+Pr9
+Opportunity to experience software development of large scale system on AWS platform.
+Own9
+W 3 P 2 N 4 A 1
+

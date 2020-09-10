@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="rootAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1274.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.VisualSensitiveAnalysisController">
+   <children>
+      <GridPane fx:id="teamsGrid" layoutX="8.0" prefHeight="152.0" prefWidth="1274.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <GridPane fx:id="teamGridPane_1" onMouseClicked="#teamGridPaneClicked">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="173.0" minWidth="10.0" prefWidth="160.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="148.0" minWidth="10.0" prefWidth="74.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="215.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label fx:id="team1Label" prefHeight="37.0" prefWidth="238.0" text="  Team 1" />
+                  <Text fx:id="t1s1" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="1" />
+                  <Text fx:id="t1s2" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="2" />
+                  <Text fx:id="t1s3" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="3" />
+                  <Text fx:id="t1s4" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="4" />
+                  <CheckBox fx:id="t1s1Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <CheckBox fx:id="t1s2Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                  <CheckBox fx:id="t1s3Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                  <CheckBox fx:id="t1s4Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                  <Text fx:id="cardProjIdText_1" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="84.205078125" GridPane.columnIndex="1" />
+               </children>
+            </GridPane>
+            <GridPane fx:id="teamGridPane_2" layoutX="10.0" layoutY="10.0" onMouseClicked="#teamGridPaneClicked" prefHeight="152.0" prefWidth="210.0" GridPane.columnIndex="1">
+               <children>
+                  <Label fx:id="team2Label" prefHeight="37.0" prefWidth="238.0" text="  Team 2" />
+                  <Text fx:id="t2s1" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="1" />
+                  <Text fx:id="t2s2" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="2" />
+                  <Text fx:id="t2s3" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="3" />
+                  <Text fx:id="t2s4" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="4" />
+                  <CheckBox fx:id="t2s1Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <CheckBox fx:id="t2s2Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                  <CheckBox fx:id="t2s3Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                  <CheckBox fx:id="t2s4Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                  <Text fx:id="cardProjIdText_2" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="83.205078125" GridPane.columnIndex="1" />
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="173.0" minWidth="10.0" prefWidth="160.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="148.0" minWidth="10.0" prefWidth="74.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="215.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
+            <GridPane fx:id="teamGridPane_3" onMouseClicked="#teamGridPaneClicked" GridPane.columnIndex="2">
+               <children>
+                  <Label fx:id="team3Label" prefHeight="37.0" prefWidth="238.0" text="  Team 3" />
+                  <Text fx:id="t3s1" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="1" />
+                  <Text fx:id="t3s2" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="2" />
+                  <Text fx:id="t3s3" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="3" />
+                  <Text fx:id="t3s4" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="4" />
+                  <CheckBox fx:id="t3s1Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <CheckBox fx:id="t3s2Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                  <CheckBox fx:id="t3s3Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                  <CheckBox fx:id="t3s4Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                  <Text fx:id="cardProjIdText_3" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="77.205078125" GridPane.columnIndex="1" />
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="173.0" minWidth="10.0" prefWidth="160.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="148.0" minWidth="10.0" prefWidth="74.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="215.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
+            <GridPane fx:id="teamGridPane_4" onMouseClicked="#teamGridPaneClicked" GridPane.columnIndex="3">
+               <children>
+                  <Label fx:id="team4Label" prefHeight="37.0" prefWidth="238.0" text="  Team 4" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="1" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="2" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="3" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="4" />
+                  <CheckBox fx:id="t4s1Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <CheckBox fx:id="t4s2Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                  <CheckBox fx:id="t4s3Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                  <CheckBox fx:id="t4s4Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                  <Text fx:id="cardProjIdText_4" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="74.205078125" GridPane.columnIndex="1" />
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="173.0" minWidth="10.0" prefWidth="160.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="148.0" minWidth="10.0" prefWidth="74.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="215.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
+            <GridPane fx:id="teamGridPane_5" onMouseClicked="#teamGridPaneClicked" GridPane.columnIndex="4">
+               <children>
+                  <Label fx:id="team5Label" prefHeight="37.0" prefWidth="238.0" text="  Team 5" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="1" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="2" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="3" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="4" />
+                  <CheckBox fx:id="t5s1Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <CheckBox fx:id="t5s2Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                  <CheckBox fx:id="t5s3Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                  <CheckBox fx:id="t5s4Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                  <Text fx:id="cardProjIdText_5" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="75.205078125" GridPane.columnIndex="1" />
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="173.0" minWidth="10.0" prefWidth="160.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="148.0" minWidth="10.0" prefWidth="74.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="241.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="215.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
+         </children>
+      </GridPane>
+      <HBox layoutY="186.0" prefHeight="175.0" prefWidth="1274.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="186.0">
+         <children>
+            <TextField fx:id="studentIdText" onInputMethodTextChanged="#validateStudentIDEvent" />
+            <Button fx:id="addBtn" mnemonicParsing="false" onAction="#addStudentEvent" text="Add" />
+            <Button fx:id="swapBtn" mnemonicParsing="false" onAction="#swapStudentEvent" text="Swap" />
+            <ListView fx:id="shortListedProjectsListView" onMouseClicked="#shortListedProjectClicked" prefHeight="175.0" prefWidth="225.0" />
+            <ListView fx:id="teamsListView" onMouseClicked="#teamsClicked" prefHeight="237.0" prefWidth="232.0" />
+            <ListView fx:id="studentsListView" prefHeight="175.0" prefWidth="222.0" />
+         </children>
+      </HBox>
+      <GridPane fx:id="analysisChartsGrid" gridLinesVisible="true" layoutY="373.0" minHeight="-Infinity" prefHeight="200.0" prefWidth="1274.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="373.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <BarChart fx:id="prefAllocStdDevGraph">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </BarChart>
+            <BarChart fx:id="avgSkillComptStdDevGraph" GridPane.columnIndex="1">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </BarChart>
+            <BarChart fx:id="skillGapStdDevGraph" GridPane.columnIndex="2">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </BarChart>
+         </children>
+      </GridPane>
+      <ToolBar layoutY="573.0" prefHeight="55.0" prefWidth="1274.0">
+        <items>
+          <Button fx:id="saveTeamsBtn" mnemonicParsing="false" onMouseClicked="#saveTeamsClicked" text="Save Teams" />
+        </items>
+      </ToolBar>
+   </children>
+</AnchorPane>
