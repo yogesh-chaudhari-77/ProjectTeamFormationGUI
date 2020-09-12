@@ -772,6 +772,8 @@ public class ProjectTeamFormationMain {
 		double sd = Math.sqrt((temp/numOfTeams));
 
 		this.setsDInSkillCompetencyAcrossProj(sd);
+
+		//this.controllerRef.update();
 	}
 
 
