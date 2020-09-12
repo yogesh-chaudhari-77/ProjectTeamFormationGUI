@@ -98,10 +98,10 @@
             <GridPane fx:id="teamGridPane_4" onMouseClicked="#teamGridPaneClicked" GridPane.columnIndex="3">
                <children>
                   <Label fx:id="team4Label" prefHeight="37.0" prefWidth="238.0" text="  Team 4" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="1" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="2" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="3" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="4" />
+                  <Text fx:id="t4s1" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="1" />
+                  <Text fx:id="t4s2" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="2" />
+                  <Text fx:id="t4s3" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="3" />
+                  <Text fx:id="t4s4" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="4" />
                   <CheckBox fx:id="t4s1Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                   <CheckBox fx:id="t4s2Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
                   <CheckBox fx:id="t4s3Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
@@ -123,10 +123,10 @@
             <GridPane fx:id="teamGridPane_5" onMouseClicked="#teamGridPaneClicked" GridPane.columnIndex="4">
                <children>
                   <Label fx:id="team5Label" prefHeight="37.0" prefWidth="238.0" text="  Team 5" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="1" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="2" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="3" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="4" />
+                  <Text fx:id="t5s1" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="1" />
+                  <Text fx:id="t5s2" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="2" />
+                  <Text fx:id="t5s3" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="3" />
+                  <Text fx:id="t5s4" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="4" />
                   <CheckBox fx:id="t5s1Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                   <CheckBox fx:id="t5s2Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
                   <CheckBox fx:id="t5s3Cb" mnemonicParsing="false" prefHeight="27.0" prefWidth="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />

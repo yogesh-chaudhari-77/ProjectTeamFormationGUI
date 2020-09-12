@@ -6,7 +6,7 @@ public class Console_Menu{
 
 	private boolean quit = false;
 	ProjectTeamFormationMain driver = null;
-	private ScannerUtil scannerUtil = ScannerUtil.createInstance().consoleReader();
+	private final ScannerUtil scannerUtil = ScannerUtil.createInstance().consoleReader();
 
 	public Console_Menu() {
 		driver = new ProjectTeamFormationMain();

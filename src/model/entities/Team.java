@@ -272,7 +272,7 @@ public class Team implements Serializable{
 											.mapToDouble(Double::valueOf)
 											.sum();
 		
-		this.totalSkillShortage = (double) totalSkillShortage;
+		this.totalSkillShortage = totalSkillShortage;
 	}
 	
 	

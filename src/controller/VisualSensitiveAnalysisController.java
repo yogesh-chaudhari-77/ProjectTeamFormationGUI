@@ -449,6 +449,11 @@ public class VisualSensitiveAnalysisController implements Initializable {
      */
     public void saveTeamsClicked(MouseEvent mouseEvent) {
         DataSaverRetrieval.writeTeamsFile(this.pj.getTeamsList());
+        DataSaverRetrieval.writeCompaniesToDatabase(this.pj.getCompaniesList());
+        DataSaverRetrieval.writeProjectOwnerToDatabase(this.pj.getProjectOwnersList());
+        DataSaverRetrieval.writeTeamsToDatabase(this.pj.getTeamsList());
+        DataSaverRetrieval.writeProjectsToDatabase(this.pj.getProjectsList());
+        DataSaverRetrieval.writeStudentsToDatabase(this.pj.getStudentsList());
         System.out.println("Saved");
     }
 

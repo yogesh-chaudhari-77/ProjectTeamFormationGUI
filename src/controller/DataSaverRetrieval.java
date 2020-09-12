@@ -1,15 +1,21 @@
+/**
+ * References :
+ * [1] Releases · xerial/sqlite-jdbc
+ * Releases · xerial/sqlite-jdbc (2020). Available at: https://github.com/xerial/sqlite-jdbc/releases (Accessed: 12 September 2020).
+ */
 package controller;
 
 import globals.Globals;
-import model.entities.Company;
-import model.entities.Project;
-import model.entities.Student;
-import model.entities.Team;
+import model.entities.*;
+import utilities.DatabaseHelper;
 import utilities.FileHandlingHelper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.*;
 
 /*
@@ -20,8 +26,8 @@ import java.util.*;
 public class DataSaverRetrieval {
 
 	// Singleton reference of the fileHandling
-	private static FileHandlingHelper fileHandler = FileHandlingHelper.init();
-	
+	private static final FileHandlingHelper fileHandler = FileHandlingHelper.init();
+	private static final DatabaseHelper dbHelper = DatabaseHelper.getInstance();
 	
 	// Reads the students file, creates the student objects, and return studentsList hashmap
 	public static HashMap<String, Student> readStudentsFile() {
@@ -546,4 +552,244 @@ public class DataSaverRetrieval {
 		System.out.println("Read teams list :"+teamsList.size());
 		return teamsList;
 	}
+
+
+	/**
+	 * Inserts companies records to the company table in SQL lite
+	 */
+	public static void writeCompaniesToDatabase(HashMap<String, Company> companiesList){
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = dbHelper.getDBConnection();
+
+			// Clear existing records
+			String sql = "DELETE FROM company";
+			Statement deleteStmt = conn.createStatement();
+			deleteStmt.executeUpdate(sql);
+
+			for(Company company : companiesList.values()){
+				sql = "INSERT INTO COMPANY (id,name,abn,webURL,address) " +
+						"VALUES (?,?,?,?,?);";
+
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, company.getId());
+				stmt.setString(2, company.getName());
+				stmt.setString(3, company.getAbn());
+				stmt.setString(4, company.getWebURL());
+				stmt.setString(5, company.getAddress());
+
+				stmt.executeUpdate();
+			}
+		} catch ( Exception e ) {
+			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+			System.exit(0);
+		}
+	}
+
+
+	/**
+	 * Inserts project owners records to the project_owner table in SQL lite
+	 */
+	public static void writeProjectOwnerToDatabase(HashMap<String, ProjectOwner> projectOwners){
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = dbHelper.getDBConnection();
+
+			// Clear existing records
+			String sql = "DELETE FROM project_owner";
+			Statement deleteStmt = conn.createStatement();
+			deleteStmt.executeUpdate(sql);
+
+			for(ProjectOwner projectOwner : projectOwners.values()){
+				sql = "INSERT INTO project_owner (id, firstname, surname, role, email, companyId) " +
+						"VALUES (?,?,?,?,?,?);";
+
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, projectOwner.getProjOwnerId());
+				stmt.setString(2, projectOwner.getFirstName());
+				stmt.setString(3, projectOwner.getSurname());
+				stmt.setString(4, projectOwner.getRole());
+				stmt.setString(5, projectOwner.getEmail());
+				stmt.setString(6, projectOwner.getCompanyId());
+
+				stmt.executeUpdate();
+			}
+		} catch ( Exception e ) {
+			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+			System.exit(0);
+		}
+	}
+
+	/**
+	 * Insert teams into the database
+	 */
+	public static void writeTeamsToDatabase(HashMap<String, Team> teams){
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = dbHelper.getDBConnection();
+
+			// Clear existing records
+			String sql = "DELETE FROM team";
+			Statement deleteStmt = conn.createStatement();
+			deleteStmt.executeUpdate(sql);
+
+			for(Team team : teams.values()){
+
+				// Write the project entry
+				sql = "INSERT INTO team (id, allocatedProjectId, prctStudentReceivedPreference, avgProjSkillComp, totalSkillShortage) " +
+						"VALUES (?,?,?,?,?);";
+
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, team.getTeamId());
+				stmt.setString(2, team.getProjectRef().getId());
+				stmt.setDouble(3, team.getPrctStudentReceivedPreference());
+				stmt.setDouble(4, team.getAvgProjSkillComp());
+				stmt.setDouble(5, team.getTotalSkillShortage());
+
+				stmt.executeUpdate();
+			}
+		} catch ( Exception e ) {
+			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+			System.exit(0);
+		}
+	}
+
+	/**
+	 * Inserts projects, project sought skills records to the company table in SQL lite
+	 */
+	public static void writeProjectsToDatabase(HashMap<String, Project> projects){
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = dbHelper.getDBConnection();
+
+			// Clear existing records
+			String deleteProjects = "DELETE FROM projects";
+			String deleteProjectSoughtSkills = "DELETE from project_soughtskills";
+			String deleteProjectTeamsRel = "DELETE from projects_teams_rel";
+			Statement deleteStmt = conn.createStatement();
+
+			deleteStmt.executeUpdate(deleteProjects);
+			deleteStmt.executeUpdate(deleteProjectSoughtSkills);
+			deleteStmt.executeUpdate(deleteProjectTeamsRel);
+
+			for(Project project : projects.values()){
+
+				// Write the project entry
+				String sql = "INSERT INTO projects (id, title, description, projectOwnerId, prefSum) " +
+						"VALUES (?,?,?,?,?);";
+
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, project.getId());
+				stmt.setString(2, project.getTitle());
+				stmt.setString(3, project.getDescription());
+				stmt.setString(4, project.getProjectOwnerId());
+				stmt.setInt(5, project.getProjectPrefSum());
+
+				stmt.executeUpdate();
+
+				// Writing project and team relation
+				sql = "INSERT INTO projects_teams_rel VALUES(?,?)";
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, project.getId());
+				stmt.setString(2, (project.getTeamRef() == null) ? "null" : project.getTeamRef().getTeamId());
+
+
+				// Write project requirements entry
+				for(Map.Entry<String, Integer> entry : project.getSoughtSkills().entrySet()){
+					stmt = conn.prepareStatement("INSERT INTO project_soughtskills VALUES (?,?,?)");
+
+					stmt.setString(1, project.getId());
+					stmt.setString(2, entry.getKey());
+					stmt.setInt(3, entry.getValue());
+
+					stmt.executeUpdate();
+				}
+			}
+		} catch ( Exception e ) {
+			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+			System.exit(0);
+		}
+	}
+
+
+	/**
+	 * Insert teams into the database
+	 */
+	public static void writeStudentsToDatabase(HashMap<String, Student> studentsList){
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = dbHelper.getDBConnection();
+
+			// Clear existing records
+			String sql = "DELETE FROM student";
+			Statement deleteStmt = conn.createStatement();
+			deleteStmt.executeUpdate(sql);
+
+			// For each student
+			for(Student student : studentsList.values()){
+
+				// Write the student entry
+				sql = "INSERT INTO student (id, personality, projectId, teamId) " +
+						"VALUES (?,?,?,?);";
+
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, student.getId());
+				stmt.setString(2, student.getPersoanlity());
+				stmt.setString(3, student.getCurrProjAssoc());
+				stmt.setString(4, (student.getCurrTeamAssoc() == null) ? null : student.getCurrTeamAssoc().getTeamId());
+
+				stmt.executeUpdate();
+
+				// Writting cant work with preferences
+				for(String cantWorkWithId : student.getCantWorkWith()){
+					stmt = conn.prepareStatement("INSERT INTO student_conflicts_rel VALUES (?, ?)");
+					stmt.setString(1, student.getId());
+					stmt.setString(2, cantWorkWithId);
+
+					stmt.executeUpdate();
+				}
+
+				// Write student grades entries
+				for(Map.Entry<String, Integer> entry : student.getGrades().entrySet()){
+					stmt = conn.prepareStatement("INSERT INTO student_grades_rel VALUES (?,?)");
+
+					stmt.setString(1, student.getId());
+					stmt.setString(2, entry.getKey());
+					stmt.setInt(3, entry.getValue());
+
+					stmt.executeUpdate();
+				}
+
+				// Write student project preferences
+				for(Map.Entry<String, Integer> entry : student.getProjPreferences().entrySet()){
+					stmt = conn.prepareStatement("INSERT INTO student_grades_rel VALUES (?,?)");
+
+					stmt.setString(1, student.getId());
+					stmt.setString(2, entry.getKey());
+					stmt.setInt(3, entry.getValue());
+
+					stmt.executeUpdate();
+				}
+			}
+		} catch ( Exception e ) {
+			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+			System.exit(0);
+		}
+	}
+
 }

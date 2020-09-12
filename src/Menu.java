@@ -20,7 +20,7 @@ public class Menu  extends Application {
 
 	private boolean quit = false;
 	static ProjectTeamFormationMain driver = new ProjectTeamFormationMain();
-	private ScannerUtil scannerUtil = ScannerUtil.createInstance().consoleReader();
+	private final ScannerUtil scannerUtil = ScannerUtil.createInstance().consoleReader();
 
 	public Menu() {
 		driver = new ProjectTeamFormationMain();
@@ -30,7 +30,7 @@ public class Menu  extends Application {
 	public void run() {
 
 		// Prepares the system with provided test data
-		this.driver.loadDataFromFiles();
+		driver.loadDataFromFiles();
 
 		do {
 			this.showMenu();
@@ -42,7 +42,7 @@ public class Menu  extends Application {
 				do {
 					this.showDisplayTeamFitnessSubMenu();
 					userChoice = scannerUtil.readString("Enter Choice : ");
-					this.driver.teamFitnessMetricOperations(userChoice);
+					driver.teamFitnessMetricOperations(userChoice);
 					
 				}while(userChoice.contentEquals("Q") == false);
 				continue;
@@ -50,7 +50,7 @@ public class Menu  extends Application {
 			}
 			// Sub menu checking ends here
 			
-			this.driver.executeOperation(userChoice);
+			driver.executeOperation(userChoice);
 			
 			if(userChoice.equalsIgnoreCase("Q")) {
 				this.quit = true;
