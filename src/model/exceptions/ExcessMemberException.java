@@ -5,7 +5,8 @@ public class ExcessMemberException extends Exception{
         System.out.println(message);
     }
 
-    public ExcessMemberException(){
+    public ExcessMemberException() {
+        super("Team is already full. Please remove one student from the list and try again.");
         System.out.println("Team is already full. Please remove one student from the list and try again.");
     }
 }

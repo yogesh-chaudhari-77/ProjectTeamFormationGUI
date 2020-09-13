@@ -21,10 +21,7 @@ import javafx.scene.text.Text;
 import model.entities.Project;
 import model.entities.Student;
 import model.entities.Team;
-import model.exceptions.ExcessMemberException;
-import model.exceptions.InvalidMemberException;
-import model.exceptions.RepeatedMemberException;
-import model.exceptions.StudentConflictException;
+import model.exceptions.*;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -282,25 +279,29 @@ public class VisualSensitiveAnalysisController implements Initializable {
         if(this.pj.getStudentsList().containsKey(enteredStudentId)){
 
             Team teamRef = this.pj.getTeamsList().get(teamId);
+
             if(teamRef != null){
                 System.out.println("Now I should be here");
+
                 try {
                     teamRef.addMember(projRef, studentRef);
                 } catch (InvalidMemberException | RepeatedMemberException | StudentConflictException | ExcessMemberException e) {
                     System.out.println("I am in show Alert");
                     showAlert(Alert.AlertType.ERROR, e.getMessage());
-                    return;
+                }catch (NoLeaderException e) {
+                    showAlert(Alert.AlertType.ERROR, "There is no leader in formed team. Reverting last addition");
+                    teamRef.removeMember(projRef, studentRef);
+                }catch (PersonalityImbalanceException e) {
+                    showAlert(Alert.AlertType.ERROR, "Personalities in team are imbalanced. Your last addition will be reverted.");
+                    teamRef.removeMember(projRef, studentRef);
                 }
 
-                if(teamRef.getMembers().size() == 4){
-                    // Make the color green
-                }
             }else{
                 System.out.println("I would be here only once");
                 Team tempTeam = new Team(teamId, projRef);
                 try {
                     tempTeam.addMember(projRef, studentRef);
-                } catch (InvalidMemberException| RepeatedMemberException | StudentConflictException | ExcessMemberException e) {
+                } catch (InvalidMemberException | RepeatedMemberException | StudentConflictException | ExcessMemberException | NoLeaderException | PersonalityImbalanceException e) {
                     e.printStackTrace();
                 }
                 this.pj.getTeamsList().put(teamId, tempTeam);
@@ -318,7 +319,9 @@ public class VisualSensitiveAnalysisController implements Initializable {
         }
 
         // Remove student from list view - if the student is not present in listView then it means that he/she have been allocated to project
-        this.studentsListView.getItems().remove(enteredStudentId);
+        if(studentRef.getCurrTeamAssoc() != null){
+            this.studentsListView.getItems().remove(enteredStudentId);
+        }
         this.renderGraphs();
     }
 
@@ -368,14 +371,13 @@ public class VisualSensitiveAnalysisController implements Initializable {
             try {
                 team1Ref.addMember( team1Ref.getProjectRef(), s2Ref );
                 team2Ref.addMember( team2Ref.getProjectRef(), s1Ref );
-            } catch (InvalidMemberException | RepeatedMemberException | StudentConflictException | ExcessMemberException e) {
-
+            } catch (InvalidMemberException | RepeatedMemberException | StudentConflictException | ExcessMemberException | NoLeaderException | PersonalityImbalanceException e) {
                 e.printStackTrace();
                 // Rectifying the swap if something goes wrong
                 try {
                     team1Ref.addMember(team1Ref.getProjectRef(), s1Ref);
                     team2Ref.addMember(team2Ref.getProjectRef(), s2Ref);
-                } catch (InvalidMemberException | RepeatedMemberException | StudentConflictException | ExcessMemberException e1) {
+                } catch (InvalidMemberException | RepeatedMemberException | StudentConflictException | ExcessMemberException | NoLeaderException | PersonalityImbalanceException e1) {
                     e1.printStackTrace();
                 }
             }
@@ -454,6 +456,7 @@ public class VisualSensitiveAnalysisController implements Initializable {
         DataSaverRetrieval.writeTeamsToDatabase(this.pj.getTeamsList());
         DataSaverRetrieval.writeProjectsToDatabase(this.pj.getProjectsList());
         DataSaverRetrieval.writeStudentsToDatabase(this.pj.getStudentsList());
+        DataSaverRetrieval.writeTeamsMembersToDatabase(this.pj.getTeamsList());
         System.out.println("Saved");
     }
 

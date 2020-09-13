@@ -9,6 +9,8 @@ import java.util.Set;
 public class Team implements Serializable{
 	
 	private static final long serialVersionUID = -5606452120005550219L;
+
+	private final static int defaultTeamSize = 4;
 	private String teamId;
 	private Project projectRef;
 	
@@ -92,7 +94,7 @@ public class Team implements Serializable{
 	 */
 	private void addMember(Student s) throws InvalidMemberException, RepeatedMemberException, StudentConflictException, ExcessMemberException {
 
-		if(this.getMembers().size() >= 4){
+		if(this.getMembers().size() >= defaultTeamSize){
 			throw new ExcessMemberException();
 		}
 		// Student already assigned to another team
@@ -101,7 +103,6 @@ public class Team implements Serializable{
 	
 		// Check if any of the team member have any conflicts with one another
 		this.checkConflicts(s);
-
 
 		// Duplicate student Ids
 		if ( this.getMembers().containsKey(s.getId()) )
@@ -116,7 +117,7 @@ public class Team implements Serializable{
 	 * @param s
 	 * @throws StudentConflictException
 	 */
-	public void addMember(Project projRef, Student s) throws InvalidMemberException, RepeatedMemberException, StudentConflictException, ExcessMemberException {
+	public void addMember(Project projRef, Student s) throws InvalidMemberException, RepeatedMemberException, StudentConflictException, ExcessMemberException, NoLeaderException, PersonalityImbalanceException {
 
 
 		// Add member to the team
@@ -126,12 +127,31 @@ public class Team implements Serializable{
 		s.setCurrProjAssoc(projRef.getId());
 		s.setCurrTeamAssoc(this);
 
+		// Check leader and personality imbalance exceptions only after team of 4 is formed
+		if(this.getMembers().size() == defaultTeamSize){
+			this.checkIfLeaderExists();
+			this.checkIfPersonalityImbalance();
+		}
+
 		// Updating the statistics
 		this.computeAvgSkillPerCategory();
 		this.computeAvgSkillForProject();
 		this.computeCategorySkillShortage();
 		this.computeOverallSkillShortage();
 		this.computePreferenceAllocPct();
+	}
+
+	/**
+	 * 13-09-2020 - A team member can be removed from the team.
+	 * This function is required to perform roll back of different references
+	 * @param s
+	 * @throws StudentConflictException
+	 */
+
+	public void removeMember(Project projRef, Student s){
+		this.members.remove(s.getId());
+		s.setCurrProjAssoc("");
+		s.setCurrTeamAssoc(null);
 	}
 
 	/*
@@ -144,11 +164,11 @@ public class Team implements Serializable{
 		
 			// Check if the new member has conflicts with exisiting team members
 			if(s.getCantWorkWith().contains( member.getId() ))
-				throw new StudentConflictException();
+				throw new StudentConflictException(s.getId()+" has conflicts with "+member.getId()+". Your last addition ("+s.getId()+") will be reverted.");
 			
 			// Check if existing member has any conflicts with new member
 			if(member.getCantWorkWith().contains( s.getId() ))
-				throw new StudentConflictException();
+				throw new StudentConflictException(member.getId()+" has conflicts with "+s.getId()+". Your last addition ("+s.getId()+") will be reverted.");
 		}
 	}
 	

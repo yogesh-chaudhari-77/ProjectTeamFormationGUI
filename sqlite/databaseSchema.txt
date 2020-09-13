@@ -1,0 +1,113 @@
+
+
+-- sqlite3.exe projectTeamFormation.db
+
+
+CREATE TABLE `company` (
+	`id` varchar(10) NULL,
+	`name` varchar(100) NULL,
+	`abn` varchar(15) NULL,
+	`webURL` varchar(100) NULL,
+	`address` varchar(255) NULL,
+	PRIMARY KEY (`id`)
+);
+
+
+CREATE TABLE `project_owner` (
+	`id` varchar(10) NULL,
+	`firstname` varchar(50) NULL,
+	`surname` varchar(50) NULL,
+	`role` varchar(100) NULL,
+	`email` varchar(255) NULL,
+	`companyId` varchar(255) NULL,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (companyId) REFERENCES company(id)
+);
+
+
+CREATE TABLE `projects` (
+	`id` varchar(10) NULL,
+	`title` varchar(100) NULL,
+	`description` varchar(255) NULL,
+	`projectOwnerId` varchar(10) NULL,
+	`prefSum` int(5),
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (projectOwnerId) REFERENCES project_owner(id)
+);
+
+
+CREATE TABLE `team` (
+	`id` varchar(10) NULL,
+	`allocatedProjectId` varchar(10) DEFAULT NULL,
+	`prctStudentReceivedPreference` double(10,5) DEFAULT NULL,
+	`avgProjSkillComp` double(10,5) DEFAULT NULL,
+	`totalSkillShortage` double(10,5) DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (allocatedProjectId) REFERENCES projects(id)
+);
+
+
+CREATE TABLE `projects_teams_rel` (
+	`projectId` varchar(10) NULL,
+	`teamId` varchar(10) NULL,
+	PRIMARY KEY (`projectId`, `teamId`),
+	FOREIGN KEY (projectId) REFERENCES projects(id),
+	FOREIGN KEY (teamId) REFERENCES team(id)
+);
+
+
+CREATE TABLE `project_soughtskills` (
+	`projectId` varchar(10) NULL,
+	`subId` varchar(5) NULL,
+	`requirement` tinyint(3) NULL,
+	PRIMARY KEY (`projectId`, `subId`),
+	FOREIGN KEY (projectId) REFERENCES projects(id)
+);
+
+
+CREATE TABLE `student` (
+	`id` varchar(10) NULL,
+	`personality` varchar(1) NULL,
+	`projectId` varchar(10) NULL,
+	`teamId` varchar(10) NULL,
+	PRIMARY KEY (`id`)
+	FOREIGN KEY (projectId) REFERENCES projects(id),
+	FOREIGN KEY (teamId) REFERENCES team(id)
+);
+
+
+CREATE TABLE `student_grades_rel` (
+	`studentId` varchar(10) NULL,
+	`subId` varchar(10) NULL,
+	`grade` tinyint(3) NULL,
+	PRIMARY KEY (`studentId`, `subId`),
+	FOREIGN KEY (studentId) REFERENCES student(id)
+);
+
+
+CREATE TABLE `student_conflicts_rel` (
+	`studentId` varchar(10) NULL,
+	`conflictWith` varchar(10) NULL,
+	PRIMARY KEY (`studentId`, `conflictWith`),
+	FOREIGN KEY (studentId) REFERENCES student(id),
+	FOREIGN KEY (conflictWith) REFERENCES student(id)
+);
+
+
+CREATE TABLE `student_project_preferences` (
+	`studentId` varchar(10) NULL,
+	`projectId` varchar(10) NULL,
+	`preference` tinyint(3) NULL,
+	PRIMARY KEY (`studentId`, `projectId`),
+	FOREIGN KEY (studentId) REFERENCES student(id),
+	FOREIGN KEY (projectId) REFERENCES projects(id)
+);
+
+
+CREATE TABLE `team_members_rel` (
+	`teamId` varchar(10) NULL,
+	`studentId` varchar(10) NULL,
+	PRIMARY KEY (`teamId`, `studentId`),
+	FOREIGN KEY (teamId) REFERENCES team(id),
+	FOREIGN KEY (studentId) REFERENCES student(id)
+);
