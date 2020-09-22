@@ -13,7 +13,6 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -44,6 +43,7 @@ public class VisualSensitiveAnalysisController implements Initializable {
     // Individual grid panes
     @FXML
     public GridPane teamGridPane_1;
+
     @FXML
     public GridPane teamGridPane_2;
 
@@ -73,68 +73,126 @@ public class VisualSensitiveAnalysisController implements Initializable {
 
     @FXML
     public Button saveTeamsBtn;
-    
+
+    @FXML
     public CheckBox t1s1Cb;
+
+    @FXML
     public CheckBox t1s2Cb;
+
+    @FXML
     public CheckBox t1s3Cb;
+
+    @FXML
     public CheckBox t1s4Cb;
+
+    @FXML
     public CheckBox t2s1Cb;
+
+    @FXML
     public CheckBox t2s2Cb;
+
+    @FXML
     public CheckBox t2s3Cb;
+
+    @FXML
     public CheckBox t2s4Cb;
+
+    @FXML
     public CheckBox t3s1Cb;
+
+    @FXML
     public CheckBox t3s2Cb;
+
+    @FXML
     public CheckBox t3s3Cb;
+
+    @FXML
     public CheckBox t3s4Cb;
+
+    @FXML
     public CheckBox t4s1Cb;
+
+    @FXML
     public CheckBox t4s2Cb;
+
+    @FXML
     public CheckBox t4s3Cb;
+
+    @FXML
     public CheckBox t4s4Cb;
+
+    @FXML
     public CheckBox t5s1Cb;
+
+    @FXML
     public CheckBox t5s2Cb;
+
+    @FXML
     public CheckBox t5s3Cb;
+
+    @FXML
     public CheckBox t5s4Cb;
+
+    // Parent of all elements for this view
+    @FXML
     public AnchorPane rootAnchorPane;
 
-    GridPane [] teamsGridColln = null;
-    Text [] cardProjeIdColln = null;
-    CheckBox [] cardCheckBoxes = null;
-
+    // List element that shows the shortlisted projects
     @FXML
     public ListView shortListedProjectsListView;
 
+    // List element that shows the formed teams
     @FXML
     public ListView teamsListView;
 
+    // List element that shows students which are yet to be shortlisted
     @FXML
     public ListView studentsListView;
 
+    //Reference to preference allocation graph at the bottom (number of lines = number of teams formed)
     @FXML
     public BarChart prefAllocStdDevGraph;
 
+    // Reference to avg skill competency across team graph (number of lines = number of teams formed)
     @FXML
     public BarChart avgSkillComptStdDevGraph;
 
+    // Reference to skill gap across team graph - (number of lines = number of teams formed)
     @FXML
     public BarChart skillGapStdDevGraph;
 
+    // Holds the references of all top grid panes where teams are rendered. 5 Grids
+    GridPane [] teamsGridColln = null;
+
+    // Holds the references of all project ids text elements inside respective teamGrid - 5 teams 5 text boxes
+    Text [] cardProjeIdColln = null;
+
+    // Holds references of checkboxes in all teamsGrid panes. - 5 teams x 4 students = 20 checkboxes
+    CheckBox [] cardCheckBoxes = null;
+
     ProjectTeamFormationMain pj = null;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+        // Initialising collections of teamGridPanes, checkboxes and TextElements - Mainly from top pane
         this.teamsGridColln = new GridPane[] {teamGridPane_1, teamGridPane_2, teamGridPane_3, teamGridPane_4, teamGridPane_5};
         this.cardProjeIdColln = new Text[] {cardProjIdText_1, cardProjIdText_2, cardProjIdText_3, cardProjIdText_4, cardProjIdText_5};
         this.cardCheckBoxes = new CheckBox[] {t1s1Cb, t1s2Cb, t1s3Cb, t1s4Cb, t2s1Cb, t2s2Cb, t2s3Cb, t2s4Cb, t3s1Cb, t3s2Cb, t3s3Cb, t3s4Cb, t4s1Cb, t4s2Cb, t4s3Cb, t4s4Cb, t5s1Cb, t5s2Cb, t5s3Cb, t5s4Cb};
 
         pj = new ProjectTeamFormationMain();
+
         pj.loadDataFromFiles();
 
         // Setting controller for updates
         pj.setController(this);
 
-        System.out.println("Hey There");
+        // Render formed teams i.e. team id and team members
         renderTeams();
+
+        // Render graphs as per formed teams i.e. team id vs value
         renderGraphs();
 
         /**
@@ -165,6 +223,11 @@ public class VisualSensitiveAnalysisController implements Initializable {
         }
     }
 
+
+    /**
+     * Renders all teams onto the top grid panes.
+     * Populates student text elements
+     */
     public void renderTeams(){
 
         Iterator it = this.pj.getTeamsList().values().iterator();
@@ -177,6 +240,12 @@ public class VisualSensitiveAnalysisController implements Initializable {
         }
     }
 
+
+    /**
+     * Paints given team grid pane with the supplied team and it's members
+     * @param gridPaneRef : Grid pane that needs to be painted
+     * @param teamRef : With this team
+     */
     public void generateATeamPanel(GridPane gridPaneRef, Team teamRef){
 
         HashMap<String, Student> members = teamRef.getMembers();
@@ -216,7 +285,6 @@ public class VisualSensitiveAnalysisController implements Initializable {
         final NumberAxis yAxis = new NumberAxis();
 
         XYChart.Series series1 = new XYChart.Series();
-        series1.setName("2003");
         this.pj.getTeamsList().values().stream().forEach((team) -> {
             series1.getData().add(new XYChart.Data(team.getTeamId(), team.getPrctStudentReceivedPreference()));
         });
@@ -235,7 +303,6 @@ public class VisualSensitiveAnalysisController implements Initializable {
         final NumberAxis yAxis = new NumberAxis();
 
         XYChart.Series series1 = new XYChart.Series();
-        series1.setName("2003");
         this.pj.getTeamsList().values().stream().forEach((team) -> {
             series1.getData().add(new XYChart.Data(team.getTeamId(), team.getAvgProjSkillComp()));
         });
@@ -256,7 +323,6 @@ public class VisualSensitiveAnalysisController implements Initializable {
         final NumberAxis yAxis = new NumberAxis();
 
         XYChart.Series series1 = new XYChart.Series();
-        series1.setName("2003");
         this.pj.getTeamsList().values().stream().forEach((team) -> {
             series1.getData().add(new XYChart.Data(team.getTeamId(), team.getTotalSkillShortage()));
         });
@@ -264,9 +330,12 @@ public class VisualSensitiveAnalysisController implements Initializable {
     }
 
 
-    public void validateStudentIDEvent(InputMethodEvent inputMethodEvent) {
-    }
-
+    /**
+     * Adds the supplied student into one of the selected project
+     * Project manager selects Project Id from list view, enteres student ID and then hits enter.
+     * Student is then added to selected project id.
+     * @param actionEvent
+     */
     public void addStudentEvent(ActionEvent actionEvent) {
 
         String currProjectId = shortListedProjectsListView.getSelectionModel().getSelectedItem().toString();
@@ -327,6 +396,8 @@ public class VisualSensitiveAnalysisController implements Initializable {
 
     /**
      * Initiate student Swap
+     * Requires exactly 2 checkboxes to be selected
+     * Does not throw error even if 2 checkboxes from same team has been selected. Because it would not cause any problem to the system.
      * @param actionEvent
      */
     public void swapStudentEvent(ActionEvent actionEvent) {
@@ -392,18 +463,10 @@ public class VisualSensitiveAnalysisController implements Initializable {
         renderTeams();
     }
 
-    /**
-     * When project manager clicks on the teamGridPane, the addition of new students will happen to this team only
-     * If the team is full then it will stop the addition and ask to remove an existing person from the team.
-     * @param mouseEvent
-     */
-    public void teamGridPaneClicked(MouseEvent mouseEvent) {
-    }
-
 
     /**
-     * Shortlisted Project Can Be Selected
-     * If the team is already present for that project then render than team
+     * Project manager selects one of the shortlisted Project before adding member to the team.
+     * If the team is already present for that project then render the team
      * Otherwise allow adding new people
      * @param mouseEvent
      */
@@ -435,10 +498,11 @@ public class VisualSensitiveAnalysisController implements Initializable {
     }
 
 
-    public void teamsClicked(MouseEvent mouseEvent) {
-    }
-
-
+    /**
+     * Wrapper function for generating generic alerts
+     * @param alertType : Error, success, prompt
+     * @param message : Error message to be displayed with the alert
+     */
     public void showAlert(Alert.AlertType alertType, String message){
         Alert myAlert = new Alert(alertType, message);
         myAlert.show();
@@ -446,6 +510,7 @@ public class VisualSensitiveAnalysisController implements Initializable {
 
 
     /**
+     * Save button clicked
      * Saving teams list to a binary file
      * @param mouseEvent
      */
@@ -461,6 +526,11 @@ public class VisualSensitiveAnalysisController implements Initializable {
     }
 
 
+    /**
+     * Helper function that returns the ref to grid pane that has team with certain project ID
+     * @param currProjectId : TeamGridPane for which project
+     * @return : reference to that grid pane if found otherwise null
+     */
     public GridPane getGridPaneForThisTeam(String currProjectId){
 
         // Check if the current selection already has a card

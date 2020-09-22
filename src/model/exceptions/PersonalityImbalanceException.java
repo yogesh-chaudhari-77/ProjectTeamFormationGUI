@@ -1,5 +1,10 @@
 package model.exceptions;
 
+/**
+ * Exception implementation
+ * Thrown when a formed team does not contain balance personality types
+ * @author Yogeshwar G. Chaudhari
+ */
 public class PersonalityImbalanceException extends Exception {
 
 	public PersonalityImbalanceException(String msg) {
