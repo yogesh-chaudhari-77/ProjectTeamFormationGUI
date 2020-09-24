@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
 
@@ -585,7 +586,6 @@ public class DataSaverRetrieval {
 			}
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-			System.exit(0);
 		}
 	}
 
@@ -622,7 +622,6 @@ public class DataSaverRetrieval {
 			}
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-			System.exit(0);
 		}
 	}
 
@@ -659,7 +658,6 @@ public class DataSaverRetrieval {
 			}
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-			System.exit(0);
 		}
 	}
 
@@ -719,7 +717,6 @@ public class DataSaverRetrieval {
 			}
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-			System.exit(0);
 		}
 	}
 
@@ -737,8 +734,14 @@ public class DataSaverRetrieval {
 
 			// Clear existing records
 			String sql = "DELETE FROM student";
+			String deleteStudentConflictsQuery = "DELETE FROM student_conflicts_rel";
+			String deleteStudentGradesQuery = "DELETE FROM student_grades_rel";
+			String deleteStudentProjPrefQuery = "DELETE FROM student_project_preferences";
 			Statement deleteStmt = conn.createStatement();
 			deleteStmt.executeUpdate(sql);
+			deleteStmt.executeUpdate(deleteStudentConflictsQuery);
+			deleteStmt.executeUpdate(deleteStudentGradesQuery);
+			deleteStmt.executeUpdate(deleteStudentProjPrefQuery);
 
 			// For each student
 			for(Student student : studentsList.values()){
@@ -757,7 +760,7 @@ public class DataSaverRetrieval {
 
 				// Writting cant work with preferences
 				for(String cantWorkWithId : student.getCantWorkWith()){
-					stmt = conn.prepareStatement("INSERT INTO student_conflicts_rel VALUES (?, ?)");
+					stmt = conn.prepareStatement("INSERT INTO student_conflicts_rel (studentId, conflictWith) VALUES (?, ?)");
 					stmt.setString(1, student.getId());
 					stmt.setString(2, cantWorkWithId);
 
@@ -766,7 +769,7 @@ public class DataSaverRetrieval {
 
 				// Write student grades entries
 				for(Map.Entry<String, Integer> entry : student.getGrades().entrySet()){
-					stmt = conn.prepareStatement("INSERT INTO student_grades_rel VALUES (?,?)");
+					stmt = conn.prepareStatement("INSERT INTO student_grades_rel (studentId, subId, grade) VALUES (?,?,?)");
 
 					stmt.setString(1, student.getId());
 					stmt.setString(2, entry.getKey());
@@ -777,7 +780,7 @@ public class DataSaverRetrieval {
 
 				// Write student project preferences
 				for(Map.Entry<String, Integer> entry : student.getProjPreferences().entrySet()){
-					stmt = conn.prepareStatement("INSERT INTO student_grades_rel VALUES (?,?)");
+					stmt = conn.prepareStatement("INSERT INTO student_project_preferences (studentId, projectId, preference) VALUES (?,?,?)");
 
 					stmt.setString(1, student.getId());
 					stmt.setString(2, entry.getKey());
@@ -788,8 +791,83 @@ public class DataSaverRetrieval {
 			}
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-			System.exit(0);
 		}
+	}
+
+
+	/**
+	 * Insert team members to database
+	 */
+	public static void writeTeamsMembersToDatabase(HashMap<String, Team> teams){
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = dbHelper.getDBConnection();
+
+			// Clear existing records
+			String sql = "DELETE FROM team_members_rel";
+			Statement deleteStmt = conn.createStatement();
+			deleteStmt.executeUpdate(sql);
+
+			for(Team team : teams.values()){
+
+				// Write the project entry
+				sql = "INSERT INTO team_members_rel (teamId, studentId) " +
+						"VALUES (?,?);";
+
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, team.getTeamId());
+
+				for(String studentId : team.getMembers().keySet()){
+					stmt.setString(2, studentId);
+
+					// Insert first member, second, third, fourth member
+					stmt.executeUpdate();
+				}
+
+				// Go for next team
+			}
+		} catch ( Exception e ) {
+			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+		}
+	}
+
+
+	public static HashMap<String, Student>  readStudentInfoFromDatabase(HashMap<String, Student> studentsList) {
+		System.out.println("Reading student info from database . . .");
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = dbHelper.getDBConnection();
+
+			ResultSet rs = dbHelper.runSimpleQuery("SELECT id, personality from student");
+
+			// Visit one student at a time
+			while(rs.next()){
+				String student_id = rs.getString("id");
+				studentsList.get(student_id).setPersoanlity(rs.getString("personality"));
+
+				// Read the student conflicts
+				ResultSet conflictsRs = dbHelper.runSimpleQuery("SELECT conflictWith from student_conflicts_rel where studentId = '"+student_id+"'");
+				while (conflictsRs.next()){
+					studentsList.get(student_id).getCantWorkWith().add(conflictsRs.getString("conflictWith"));
+				}
+			}
+
+		} catch ( Exception e ) {
+			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+		}
+
+		for(Student s : studentsList.values())
+		{
+			System.out.println(s.toString());
+		}
+
+		return studentsList;
 	}
 
 }

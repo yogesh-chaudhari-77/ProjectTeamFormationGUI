@@ -9,6 +9,8 @@ import java.util.Set;
 public class Team implements Serializable{
 	
 	private static final long serialVersionUID = -5606452120005550219L;
+
+	private final static int defaultTeamSize = 4;
 	private String teamId;
 	private Project projectRef;
 	
@@ -92,7 +94,7 @@ public class Team implements Serializable{
 	 */
 	private void addMember(Student s) throws InvalidMemberException, RepeatedMemberException, StudentConflictException, ExcessMemberException {
 
-		if(this.getMembers().size() >= 4){
+		if(this.getMembers().size() >= defaultTeamSize){
 			throw new ExcessMemberException();
 		}
 		// Student already assigned to another team
@@ -101,7 +103,6 @@ public class Team implements Serializable{
 	
 		// Check if any of the team member have any conflicts with one another
 		this.checkConflicts(s);
-
 
 		// Duplicate student Ids
 		if ( this.getMembers().containsKey(s.getId()) )
@@ -116,22 +117,41 @@ public class Team implements Serializable{
 	 * @param s
 	 * @throws StudentConflictException
 	 */
-	public void addMember(Project projRef, Student s) throws InvalidMemberException, RepeatedMemberException, StudentConflictException, ExcessMemberException {
+	public void addMember(Project projRef, Student s) throws InvalidMemberException, RepeatedMemberException, StudentConflictException, ExcessMemberException, NoLeaderException, PersonalityImbalanceException {
 
 
 		// Add member to the team
 		this.addMember(s);
 
+		this.checkIfPersonalityImbalance();
+
 		// On success, assign current projectId to that student
 		s.setCurrProjAssoc(projRef.getId());
 		s.setCurrTeamAssoc(this);
 
+		// Check leader and personality imbalance exceptions only after team of 4 is formed
+		if(this.getMembers().size() == defaultTeamSize){
+			this.checkIfLeaderExists();
+			this.checkIfPersonalityImbalance();
+		}
+
 		// Updating the statistics
-		this.computeAvgSkillPerCategory();
-		this.computeAvgSkillForProject();
-		this.computeCategorySkillShortage();
-		this.computeOverallSkillShortage();
-		this.computePreferenceAllocPct();
+		this.updateStatistics();
+	}
+
+	/**
+	 * 13-09-2020 - A team member can be removed from the team.
+	 * This function is required to perform roll back of different references
+	 * @param s
+	 * @throws StudentConflictException
+	 */
+
+	public void removeMember(Project projRef, Student s){
+		this.members.remove(s.getId());
+		s.setCurrProjAssoc("");
+		s.setCurrTeamAssoc(null);
+
+		this.updateStatistics();
 	}
 
 	/*
@@ -144,11 +164,11 @@ public class Team implements Serializable{
 		
 			// Check if the new member has conflicts with exisiting team members
 			if(s.getCantWorkWith().contains( member.getId() ))
-				throw new StudentConflictException();
+				throw new StudentConflictException(s.getId()+" has conflicts with "+member.getId()+". Your last addition ("+s.getId()+") will be reverted.");
 			
 			// Check if existing member has any conflicts with new member
 			if(member.getCantWorkWith().contains( s.getId() ))
-				throw new StudentConflictException();
+				throw new StudentConflictException(member.getId()+" has conflicts with "+s.getId()+". Your last addition ("+s.getId()+") will be reverted.");
 		}
 	}
 	
@@ -187,9 +207,20 @@ public class Team implements Serializable{
 		for(Student sRef : this.members.values()) {
 			personalityTypes.add(sRef.getPersoanlity());
 		}
-		
-		if(personalityTypes.size() < 3) {
-			throw new PersonalityImbalanceException("Duplicate personalities");
+
+		// 3 members have already been added
+		if(this.members.size() == 3){
+			// Of same personality type say b,b,b
+			if(personalityTypes.size() == 1) {
+
+				throw new PersonalityImbalanceException("Duplicate personalities");
+			}
+		}else if( this.members.size() == 4 ) {
+
+			// When complete team has been formed
+			if(personalityTypes.size() < 3) {
+				throw new PersonalityImbalanceException("Duplicate personalities");
+			}
 		}
 		
 		return true;
@@ -307,6 +338,15 @@ public class Team implements Serializable{
 		this.setPrctStudentReceivedPreference( ( count / this.getMembers().size() ) * 100 );
 	}
 
+
+	public void updateStatistics(){
+		// Updating the statistics
+		this.computeAvgSkillPerCategory();
+		this.computeAvgSkillForProject();
+		this.computeCategorySkillShortage();
+		this.computeOverallSkillShortage();
+		this.computePreferenceAllocPct();
+	}
 	
 	@Override
 	public String toString() {

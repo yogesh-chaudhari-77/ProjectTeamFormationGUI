@@ -8,7 +8,29 @@
 
 <AnchorPane fx:id="rootAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1274.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.VisualSensitiveAnalysisController">
    <children>
-      <GridPane fx:id="teamsGrid" layoutX="8.0" prefHeight="152.0" prefWidth="1274.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <MenuBar AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem fx:id="startOver" mnemonicParsing="false" onAction="#startOver" text="Start Over" />
+                  <MenuItem mnemonicParsing="false" onAction="#saveTeamsClicked" text="Save" />
+                  <MenuItem fx:id="saveAndCloseBtn" mnemonicParsing="false" onAction="#saveAndClose" text="Save and Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="View">
+            <items>
+              <MenuItem mnemonicParsing="false" text="All Projects" />
+                  <MenuItem mnemonicParsing="false" text="All Students" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <GridPane fx:id="teamsGrid" layoutX="8.0" prefHeight="152.0" prefWidth="1274.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -20,7 +42,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <GridPane fx:id="teamGridPane_1" onMouseClicked="#teamGridPaneClicked">
+            <GridPane fx:id="teamGridPane_1">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="173.0" minWidth="10.0" prefWidth="160.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="148.0" minWidth="10.0" prefWidth="74.0" />
@@ -45,7 +67,7 @@
                   <Text fx:id="cardProjIdText_1" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="84.205078125" GridPane.columnIndex="1" />
                </children>
             </GridPane>
-            <GridPane fx:id="teamGridPane_2" layoutX="10.0" layoutY="10.0" onMouseClicked="#teamGridPaneClicked" prefHeight="152.0" prefWidth="210.0" GridPane.columnIndex="1">
+            <GridPane fx:id="teamGridPane_2" layoutX="10.0" layoutY="10.0" prefHeight="152.0" prefWidth="210.0" GridPane.columnIndex="1">
                <children>
                   <Label fx:id="team2Label" prefHeight="37.0" prefWidth="238.0" text="  Team 2" />
                   <Text fx:id="t2s1" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="1" />
@@ -70,7 +92,7 @@
                   <RowConstraints maxHeight="215.0" vgrow="SOMETIMES" />
                </rowConstraints>
             </GridPane>
-            <GridPane fx:id="teamGridPane_3" onMouseClicked="#teamGridPaneClicked" GridPane.columnIndex="2">
+            <GridPane fx:id="teamGridPane_3" GridPane.columnIndex="2">
                <children>
                   <Label fx:id="team3Label" prefHeight="37.0" prefWidth="238.0" text="  Team 3" />
                   <Text fx:id="t3s1" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="1" />
@@ -95,7 +117,7 @@
                   <RowConstraints maxHeight="215.0" vgrow="SOMETIMES" />
                </rowConstraints>
             </GridPane>
-            <GridPane fx:id="teamGridPane_4" onMouseClicked="#teamGridPaneClicked" GridPane.columnIndex="3">
+            <GridPane fx:id="teamGridPane_4" GridPane.columnIndex="3">
                <children>
                   <Label fx:id="team4Label" prefHeight="37.0" prefWidth="238.0" text="  Team 4" />
                   <Text fx:id="t4s1" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="1" />
@@ -120,7 +142,7 @@
                   <RowConstraints maxHeight="215.0" vgrow="SOMETIMES" />
                </rowConstraints>
             </GridPane>
-            <GridPane fx:id="teamGridPane_5" onMouseClicked="#teamGridPaneClicked" GridPane.columnIndex="4">
+            <GridPane fx:id="teamGridPane_5" GridPane.columnIndex="4">
                <children>
                   <Label fx:id="team5Label" prefHeight="37.0" prefWidth="238.0" text="  Team 5" />
                   <Text fx:id="t5s1" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="160.205078125" GridPane.rowIndex="1" />
@@ -147,17 +169,36 @@
             </GridPane>
          </children>
       </GridPane>
-      <HBox layoutY="186.0" prefHeight="175.0" prefWidth="1274.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="186.0">
+      <HBox layoutY="186.0" prefHeight="146.0" prefWidth="1274.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="215.0">
          <children>
-            <TextField fx:id="studentIdText" onInputMethodTextChanged="#validateStudentIDEvent" />
-            <Button fx:id="addBtn" mnemonicParsing="false" onAction="#addStudentEvent" text="Add" />
-            <Button fx:id="swapBtn" mnemonicParsing="false" onAction="#swapStudentEvent" text="Swap" />
-            <ListView fx:id="shortListedProjectsListView" onMouseClicked="#shortListedProjectClicked" prefHeight="175.0" prefWidth="225.0" />
-            <ListView fx:id="teamsListView" onMouseClicked="#teamsClicked" prefHeight="237.0" prefWidth="232.0" />
-            <ListView fx:id="studentsListView" prefHeight="175.0" prefWidth="222.0" />
+            <AnchorPane prefHeight="146.0" prefWidth="459.0">
+               <children>
+                  <HBox prefHeight="39.0" prefWidth="529.0">
+                     <children>
+                        <TextField fx:id="studentIdText" />
+                        <Button fx:id="addBtn" layoutX="224.0" mnemonicParsing="false" onAction="#addStudentEvent" prefHeight="39.0" prefWidth="146.0" text="Add" />
+                        <Button fx:id="swapBtn" layoutX="362.0" mnemonicParsing="false" onAction="#swapStudentEvent" prefHeight="39.0" prefWidth="159.0" text="Swap" />
+                     </children>
+                  </HBox>
+                  <ToolBar layoutY="73.0" prefHeight="55.0" prefWidth="513.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <items>
+                        <Button fx:id="removeStudentbtn" layoutX="91.0" layoutY="77.0" mnemonicParsing="false" onMouseClicked="#removeStudentClicked" text="Remove" />
+                        <Button fx:id="saveTeamsToFileBtn" mnemonicParsing="false" onMouseClicked="#saveTeamsClicked" text="Save (F)" />
+                        <Button fx:id="saveTeamsToDatabaseBtn" mnemonicParsing="false" onMouseClicked="#saveTeamsClicked" text="Save (D)" />
+                        <Button mnemonicParsing="false" text="Suggest" />
+                        <Button mnemonicParsing="false" text="Auto" />
+                     </items>
+                  </ToolBar>
+               </children>
+            </AnchorPane>
+            <ListView fx:id="shortListedProjectsListView" onMouseClicked="#shortListedProjectClicked" prefHeight="146.0" prefWidth="82.0" />
+            <TextFlow fx:id="projectInfoTextFlow" disable="true" prefHeight="146.0" prefWidth="183.0" />
+            <ListView fx:id="studentsListView" onMouseClicked="#studentListViewClicked" prefHeight="146.0" prefWidth="74.0" />
+            <TextFlow fx:id="studentInfoTextFlow" disable="true" prefHeight="146.0" prefWidth="183.0" />
+            <ListView fx:id="teamsListView" prefHeight="146.0" prefWidth="75.0" />
          </children>
       </HBox>
-      <GridPane fx:id="analysisChartsGrid" gridLinesVisible="true" layoutY="373.0" minHeight="-Infinity" prefHeight="200.0" prefWidth="1274.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="373.0">
+      <GridPane fx:id="analysisChartsGrid" gridLinesVisible="true" layoutY="373.0" minHeight="-Infinity" prefHeight="200.0" prefWidth="1274.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="400.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -193,10 +234,11 @@
             </BarChart>
          </children>
       </GridPane>
-      <ToolBar layoutY="573.0" prefHeight="55.0" prefWidth="1274.0">
-        <items>
-          <Button fx:id="saveTeamsBtn" mnemonicParsing="false" onMouseClicked="#saveTeamsClicked" text="Save Teams" />
-        </items>
-      </ToolBar>
+      <HBox layoutX="37.0" layoutY="642.0" prefHeight="0.0" prefWidth="1274.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <Label fx:id="statusbarLabel" prefHeight="27.0" prefWidth="1025.0" />
+            <ProgressBar fx:id="statusbarProgress" prefHeight="27.0" prefWidth="261.0" progress="0.0" />
+         </children>
+      </HBox>
    </children>
 </AnchorPane>
