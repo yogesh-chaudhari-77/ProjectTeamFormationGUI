@@ -489,10 +489,6 @@ public class ProjectTeamFormationMain {
 	 */
 
 	public void calProjectsPrefSum() {
-		
-		
-		
-		
 
 		HashMap<String, Student> studentListRef = this.getStudentsList();
 		HashMap<String, Project> projListRef = this.getProjectsList();
@@ -563,7 +559,9 @@ public class ProjectTeamFormationMain {
 		// Read Students Data
 		this.setStudentsList(DataSaverRetrieval.readStudentsFile());
 		DataSaverRetrieval.readStudentPreferencesFile(this.getStudentsList());
-		DataSaverRetrieval.readStudentInfoFile(this.getStudentsList());
+		//DataSaverRetrieval.readStudentInfoFile(this.getStudentsList());
+
+		DataSaverRetrieval.readStudentInfoFromDatabase(this.getStudentsList());
 
 		this.getStudentsList().values().forEach((student) -> System.out.println(student));
 
@@ -615,18 +613,57 @@ public class ProjectTeamFormationMain {
 	public void saveDataToFiles() {
 
 		// Saving operations begin here
+
+		this.controllerRef.statusbarProgress.setProgress(1/7);
 		DataSaverRetrieval.writeCompaniesFile(this.getCompaniesList());
+
+		this.controllerRef.statusbarProgress.setProgress(2/7);
 		DataSaverRetrieval.writeProjectsFile(this.getProjectsList());
+
+		this.controllerRef.statusbarProgress.setProgress(3/7);
 		DataSaverRetrieval.writeStudentsFile(this.getStudentsList());
+
+		this.controllerRef.statusbarProgress.setProgress(4/7);
 		DataSaverRetrieval.writeStudentInfoFile(this.getStudentsList());
+
+		this.controllerRef.statusbarProgress.setProgress(5/7);
 		DataSaverRetrieval.writeStudentPreferences(this.getStudentsList());
 
 		this.calProjectsPrefSum();
 		this.setShortListedProjectsList(this.discardLeastPopularProj());
 
+		this.controllerRef.statusbarProgress.setProgress(6/7);
 		DataSaverRetrieval.writeShortListedProjectsFile(this.getShortListedProjectsList());
+
+		this.controllerRef.statusbarProgress.setProgress(7/7);
 		DataSaverRetrieval.writeTeamsFile(this.getTeamsList());
 
+	}
+
+	public void saveDataToDatabase(){
+
+		// Saving data to database
+
+		this.controllerRef.statusbarProgress.setProgress(1/7);
+		DataSaverRetrieval.writeTeamsFile(this.getTeamsList());
+
+		this.controllerRef.statusbarProgress.setProgress(2/7);
+		DataSaverRetrieval.writeCompaniesToDatabase(this.getCompaniesList());
+
+		this.controllerRef.statusbarProgress.setProgress(3/7);
+		DataSaverRetrieval.writeProjectOwnerToDatabase(this.getProjectOwnersList());
+
+		this.controllerRef.statusbarProgress.setProgress(4/7);
+		DataSaverRetrieval.writeTeamsToDatabase(this.getTeamsList());
+
+		this.controllerRef.statusbarProgress.setProgress(5/7);
+		DataSaverRetrieval.writeProjectsToDatabase(this.getProjectsList());
+
+		this.controllerRef.statusbarProgress.setProgress(6/7);
+		DataSaverRetrieval.writeStudentsToDatabase(this.getStudentsList());
+
+		this.controllerRef.statusbarProgress.setProgress(7/7);
+		DataSaverRetrieval.writeTeamsMembersToDatabase(this.getTeamsList());
 	}
 
 	// 18-08-2020 - MileStone 2 - Forming team

@@ -123,6 +123,8 @@ public class Team implements Serializable{
 		// Add member to the team
 		this.addMember(s);
 
+		this.checkIfPersonalityImbalance();
+
 		// On success, assign current projectId to that student
 		s.setCurrProjAssoc(projRef.getId());
 		s.setCurrTeamAssoc(this);
@@ -134,11 +136,7 @@ public class Team implements Serializable{
 		}
 
 		// Updating the statistics
-		this.computeAvgSkillPerCategory();
-		this.computeAvgSkillForProject();
-		this.computeCategorySkillShortage();
-		this.computeOverallSkillShortage();
-		this.computePreferenceAllocPct();
+		this.updateStatistics();
 	}
 
 	/**
@@ -152,6 +150,8 @@ public class Team implements Serializable{
 		this.members.remove(s.getId());
 		s.setCurrProjAssoc("");
 		s.setCurrTeamAssoc(null);
+
+		this.updateStatistics();
 	}
 
 	/*
@@ -207,9 +207,20 @@ public class Team implements Serializable{
 		for(Student sRef : this.members.values()) {
 			personalityTypes.add(sRef.getPersoanlity());
 		}
-		
-		if(personalityTypes.size() < 3) {
-			throw new PersonalityImbalanceException("Duplicate personalities");
+
+		// 3 members have already been added
+		if(this.members.size() == 3){
+			// Of same personality type say b,b,b
+			if(personalityTypes.size() == 1) {
+
+				throw new PersonalityImbalanceException("Duplicate personalities");
+			}
+		}else if( this.members.size() == 4 ) {
+
+			// When complete team has been formed
+			if(personalityTypes.size() < 3) {
+				throw new PersonalityImbalanceException("Duplicate personalities");
+			}
 		}
 		
 		return true;
@@ -327,6 +338,15 @@ public class Team implements Serializable{
 		this.setPrctStudentReceivedPreference( ( count / this.getMembers().size() ) * 100 );
 	}
 
+
+	public void updateStatistics(){
+		// Updating the statistics
+		this.computeAvgSkillPerCategory();
+		this.computeAvgSkillForProject();
+		this.computeCategorySkillShortage();
+		this.computeOverallSkillShortage();
+		this.computePreferenceAllocPct();
+	}
 	
 	@Override
 	public String toString() {

@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
 
@@ -585,7 +586,6 @@ public class DataSaverRetrieval {
 			}
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-			System.exit(0);
 		}
 	}
 
@@ -622,7 +622,6 @@ public class DataSaverRetrieval {
 			}
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-			System.exit(0);
 		}
 	}
 
@@ -659,7 +658,6 @@ public class DataSaverRetrieval {
 			}
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-			System.exit(0);
 		}
 	}
 
@@ -719,7 +717,6 @@ public class DataSaverRetrieval {
 			}
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-			System.exit(0);
 		}
 	}
 
@@ -794,7 +791,6 @@ public class DataSaverRetrieval {
 			}
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-			System.exit(0);
 		}
 	}
 
@@ -835,8 +831,43 @@ public class DataSaverRetrieval {
 			}
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-			System.exit(0);
 		}
+	}
+
+
+	public static HashMap<String, Student>  readStudentInfoFromDatabase(HashMap<String, Student> studentsList) {
+		System.out.println("Reading student info from database . . .");
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = dbHelper.getDBConnection();
+
+			ResultSet rs = dbHelper.runSimpleQuery("SELECT id, personality from student");
+
+			// Visit one student at a time
+			while(rs.next()){
+				String student_id = rs.getString("id");
+				studentsList.get(student_id).setPersoanlity(rs.getString("personality"));
+
+				// Read the student conflicts
+				ResultSet conflictsRs = dbHelper.runSimpleQuery("SELECT conflictWith from student_conflicts_rel where studentId = '"+student_id+"'");
+				while (conflictsRs.next()){
+					studentsList.get(student_id).getCantWorkWith().add(conflictsRs.getString("conflictWith"));
+				}
+			}
+
+		} catch ( Exception e ) {
+			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+		}
+
+		for(Student s : studentsList.values())
+		{
+			System.out.println(s.toString());
+		}
+
+		return studentsList;
 	}
 
 }

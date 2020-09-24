@@ -17,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import model.entities.Project;
 import model.entities.Student;
 import model.entities.Team;
@@ -161,6 +162,11 @@ public class VisualSensitiveAnalysisController implements Initializable {
     // Reference to skill gap across team graph - (number of lines = number of teams formed)
     @FXML
     public BarChart skillGapStdDevGraph;
+    public TextFlow projectInfoTextFlow;
+    public TextFlow studentInfoTextFlow;
+    public MenuItem saveAndCloseBtn;
+    public Label statusbarLabel;
+    public ProgressBar statusbarProgress;
 
     // Holds the references of all top grid panes where teams are rendered. 5 Grids
     GridPane [] teamsGridColln = null;
@@ -172,7 +178,6 @@ public class VisualSensitiveAnalysisController implements Initializable {
     CheckBox [] cardCheckBoxes = null;
 
     ProjectTeamFormationMain pj = null;
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -209,26 +214,33 @@ public class VisualSensitiveAnalysisController implements Initializable {
             this.teamsListView.getItems().add(teamId);
         }
 
-        /**
-         * Populating student list view
-         * If the current project allocation is not null then only it will be added to the project
-          */
-        for(Student s : this.pj.getStudentsList().values()){
-            System.out.println("In Student View Populatation");
-            System.out.println(s.getCurrProjAssoc());
-
-            if(s.getCurrProjAssoc() == null || s.getCurrProjAssoc() == "" || s.getCurrProjAssoc().isEmpty() || s.getCurrProjAssoc().contentEquals("")){
-                this.studentsListView.getItems().add(s.getId());
-            }
-        }
+        populateStudentListView();
     }
 
+
+    /**
+     * Populating student list view
+     * If the current project allocation is not null then only it will be added to the project
+     */
+     public void populateStudentListView(){
+
+         for(Student s : this.pj.getStudentsList().values()){
+             System.out.println("In Student View Populatation");
+             System.out.println(s.getCurrProjAssoc());
+
+             if(s.getCurrProjAssoc() == null || s.getCurrProjAssoc() == "" || s.getCurrProjAssoc().isEmpty() || s.getCurrProjAssoc().contentEquals("")){
+                 this.studentsListView.getItems().add(s.getId());
+             }
+         }
+     }
 
     /**
      * Renders all teams onto the top grid panes.
      * Populates student text elements
      */
     public void renderTeams(){
+
+        statusbarLabel.setText("Rendering team");
 
         Iterator it = this.pj.getTeamsList().values().iterator();
 
@@ -253,6 +265,12 @@ public class VisualSensitiveAnalysisController implements Initializable {
         Text currProjIdText = (Text) gridPaneRef.lookup("#cardProjIdText_"+gridPaneNumber);
         currProjIdText.setText(teamRef.getProjectRef().getId());
 
+        // Clear existing student ids
+        for(int r = 0; r < 4; r++){
+            Text s = (Text) gridPaneRef.lookup("#t"+gridPaneNumber+"s"+(r+1));
+            s.setText("");
+        }
+
         int i = 0;
         for(String idStr : members.keySet()){
             Text s = (Text) gridPaneRef.lookup("#t"+gridPaneNumber+"s"+(i+1));
@@ -268,6 +286,7 @@ public class VisualSensitiveAnalysisController implements Initializable {
      * This is mapping of standard deviation against teams
      */
     public void renderGraphs(){
+        statusbarLabel.setText("Rendering Graphs");
         renderPreferencesGraph();
         renderAvgCompetencyLevelGraph();
         renderSkillGapGraph();
@@ -307,6 +326,7 @@ public class VisualSensitiveAnalysisController implements Initializable {
             series1.getData().add(new XYChart.Data(team.getTeamId(), team.getAvgProjSkillComp()));
         });
         avgSkillComptStdDevGraph.getData().add(series1);
+        
     }
 
     /**
@@ -356,7 +376,7 @@ public class VisualSensitiveAnalysisController implements Initializable {
                     teamRef.addMember(projRef, studentRef);
                 } catch (InvalidMemberException | RepeatedMemberException | StudentConflictException | ExcessMemberException e) {
                     System.out.println("I am in show Alert");
-                    showAlert(Alert.AlertType.ERROR, e.getMessage());
+                    showAlert(Alert.AlertType.ERROR, e.getMessage()+" Your last addition will be reverted.");
                 }catch (NoLeaderException e) {
                     showAlert(Alert.AlertType.ERROR, "There is no leader in formed team. Reverting last addition");
                     teamRef.removeMember(projRef, studentRef);
@@ -370,8 +390,11 @@ public class VisualSensitiveAnalysisController implements Initializable {
                 Team tempTeam = new Team(teamId, projRef);
                 try {
                     tempTeam.addMember(projRef, studentRef);
-                } catch (InvalidMemberException | RepeatedMemberException | StudentConflictException | ExcessMemberException | NoLeaderException | PersonalityImbalanceException e) {
-                    e.printStackTrace();
+                } catch (InvalidMemberException | RepeatedMemberException | StudentConflictException | ExcessMemberException | NoLeaderException e) {
+                    showAlert(Alert.AlertType.ERROR, e.getMessage()+" Your last addition will be reverted.");
+                } catch (PersonalityImbalanceException p){
+                    showAlert(Alert.AlertType.ERROR, "Personalities in team are imbalanced. Your last addition will be reverted.");
+                    teamRef.removeMember(projRef, studentRef);
                 }
                 this.pj.getTeamsList().put(teamId, tempTeam);
                 this.teamsListView.getItems().add(teamId);
@@ -476,6 +499,9 @@ public class VisualSensitiveAnalysisController implements Initializable {
 
          String currProjectId = shortListedProjectsListView.getSelectionModel().getSelectedItem().toString();
 
+         // Render the project info
+         paintProjectInfo( this.pj.getShortListedProjectsList().get(currProjectId) );
+
         // Check if the current selection already has a card
          for(int i = 0; i < this.cardProjeIdColln.length; i++){
 
@@ -515,14 +541,21 @@ public class VisualSensitiveAnalysisController implements Initializable {
      * @param mouseEvent
      */
     public void saveTeamsClicked(MouseEvent mouseEvent) {
-        DataSaverRetrieval.writeTeamsFile(this.pj.getTeamsList());
-        DataSaverRetrieval.writeCompaniesToDatabase(this.pj.getCompaniesList());
-        DataSaverRetrieval.writeProjectOwnerToDatabase(this.pj.getProjectOwnersList());
-        DataSaverRetrieval.writeTeamsToDatabase(this.pj.getTeamsList());
-        DataSaverRetrieval.writeProjectsToDatabase(this.pj.getProjectsList());
-        DataSaverRetrieval.writeStudentsToDatabase(this.pj.getStudentsList());
-        DataSaverRetrieval.writeTeamsMembersToDatabase(this.pj.getTeamsList());
-        System.out.println("Saved");
+
+        statusbarLabel.setText("Saving started ");
+        statusbarLabel.setText("Saving to files");
+        statusbarProgress.setProgress(0);
+
+        // Saving data to files
+        this.pj.saveDataToFiles();
+
+        // Same copy will be saved to database as well
+        statusbarLabel.setText("Saving to database");
+        statusbarProgress.setProgress(0);
+        this.pj.saveDataToDatabase();
+        statusbarProgress.setProgress(100);
+
+        statusbarLabel.setText("Saved successfully");
     }
 
 
@@ -544,5 +577,115 @@ public class VisualSensitiveAnalysisController implements Initializable {
         }
 
         return null;
+    }
+
+
+    public void paintStudentInfo(Student stu){
+
+        // Remove all existing datainside textflow
+        this.studentInfoTextFlow.getChildren().removeAll( this.studentInfoTextFlow.getChildren() );
+
+        StringBuilder studentInfo = new StringBuilder();
+
+        // Student ID
+        Text textEle = new Text("");
+
+        studentInfo.append("Student ID : "+stu.getId()+"\n");
+        studentInfo.append("Personality : "+ stu.getPersoanlity()+"\n");
+        studentInfo.append("Conflicts : "+ stu.getCantWorkWith()+"\n");
+        studentInfo.append("Grades : \n"+ stu.getGrades().toString()+"\n");
+        studentInfo.append("Preferences : \n"+stu.getProjPreferences().toString()+"\n");
+
+        textEle.setText(studentInfo.toString());
+        studentInfoTextFlow.getChildren().add(textEle);
+    }
+
+
+    public void paintProjectInfo(Project pro){
+
+        // Remove all existing datainside textflow
+        this.projectInfoTextFlow.getChildren().removeAll( this.projectInfoTextFlow.getChildren() );
+
+        StringBuilder projectInfo = new StringBuilder();
+
+        // Student ID
+        Text textEle = new Text("");
+
+        projectInfo.append("Project ID : "+pro.getId()+"\n");
+        projectInfo.append("Title : \n"+ pro.getTitle().substring(0,20)+"..."+"\n");
+        projectInfo.append("Description :\n "+ pro.getDescription().substring(0,20)+ "..." +"\n");
+        projectInfo.append("Requirements : \n"+ pro.getSoughtSkills().toString()+"\n");
+
+        textEle.setText(projectInfo.toString());
+        projectInfoTextFlow.getChildren().add(textEle);
+    }
+
+    public void studentListViewClicked(MouseEvent mouseEvent) {
+
+        String studentId = studentsListView.getSelectionModel().getSelectedItem().toString();
+
+        if(studentId == null || studentId == "" || studentId.isEmpty() || studentId.isBlank()){
+            showAlert(Alert.AlertType.ERROR, "Invalid Student ID. Please try again");
+            return;
+        }
+
+        paintStudentInfo( this.pj.getStudentsList().get(studentId));
+    }
+
+
+    public void removeStudentClicked(MouseEvent mouseEvent) {
+        CheckBox [] selectedCbs = Arrays.stream(this.cardCheckBoxes).filter(x -> x.isSelected() == true).toArray(CheckBox[]::new);
+
+        if(selectedCbs.length == 0){
+            this.showAlert(Alert.AlertType.ERROR, "You need to select atleast one student.");
+            return;
+        }
+
+        for(CheckBox cb : selectedCbs){
+            String stuTextId = cb.getId().replace("Cb", "");
+            String stuId = ((Text) rootAnchorPane.lookup("#"+stuTextId)).getText();
+
+            if(stuId == "" || stuId == null || stuId.isBlank() || stuId.isEmpty()){
+                cb.setSelected(false);
+                continue;
+            }
+
+            // Get the student reference from those ids
+            Student s1Ref = this.pj.getStudentsList().get(stuId);
+
+            // Remove that student from the current team
+            Team team1Ref = s1Ref.getCurrTeamAssoc();
+            team1Ref.removeMember(team1Ref.getProjectRef(), s1Ref);
+
+            ((Text) rootAnchorPane.lookup("#"+stuTextId)).setText("");
+            cb.setSelected(false);
+        }
+
+        populateStudentListView();
+        renderTeams();
+        renderGraphs();
+    }
+
+    /**
+     * Menu option to clear all the teams
+     * @param actionEvent
+     */
+    public void startOver(ActionEvent actionEvent) {
+
+        this.pj.setTeamsList( new HashMap<String, Team>() );
+        renderTeams();
+        renderGraphs();
+    }
+
+
+    /**
+     * Menu option to save and exit at the same time
+     * @param actionEvent
+     */
+    public void saveAndClose(ActionEvent actionEvent) {
+
+        this.pj.saveDataToFiles();
+        this.pj.saveDataToDatabase();
+        System.exit(0);
     }
 }
