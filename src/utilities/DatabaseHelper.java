@@ -62,6 +62,7 @@ public class DatabaseHelper {
 		try {
 			if(this.connect != null) {
 				this.connect.close();
+				this.connect = null;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -1,5 +1,6 @@
-package controller;
+package main;
 
+import controller.VisualSensitiveAnalysisController;
 import globals.Globals;
 import model.entities.*;
 import model.exceptions.*;
@@ -29,7 +30,7 @@ public class ProjectTeamFormationMain {
 	private HashMap<String, Student> studentsList;
 
 	// 18-08-2020 - MileStone 2
-	private HashMap<String, Team> teamsList;
+	private LinkedHashMap<String, Team> teamsList;
 
 	// SD In Skill Competency Across Projects
 	private double sDInSkillCompetencyAcrossProj = 0.0;
@@ -50,7 +51,7 @@ public class ProjectTeamFormationMain {
 		projectsList = new HashMap<String, Project>();
 		shortListedProjectsList = new LinkedHashMap<String, Project>();
 		studentsList = new HashMap<String, Student>();
-		teamsList = new HashMap<String, Team>();
+		teamsList = new LinkedHashMap<String, Team>();
 	}
 
 
@@ -559,7 +560,7 @@ public class ProjectTeamFormationMain {
 		// Read Students Data
 		this.setStudentsList(DataSaverRetrieval.readStudentsFile());
 		DataSaverRetrieval.readStudentPreferencesFile(this.getStudentsList());
-		//DataSaverRetrieval.readStudentInfoFile(this.getStudentsList());
+		// main.DataSaverRetrieval.readStudentInfoFile(this.getStudentsList());
 
 		DataSaverRetrieval.readStudentInfoFromDatabase(this.getStudentsList());
 
@@ -587,8 +588,12 @@ public class ProjectTeamFormationMain {
 		this.setShortListedProjectsList( this.discardLeastPopularProj() );
 
 		// Milestone 2 - Read teams serialised files
-		this.setTeamsList( DataSaverRetrieval.readTeamsFile() );
-		
+		// this.setTeamsList( main.DataSaverRetrieval.readTeamsFile() );
+
+		// Milestone 4 - Updated for reading from database
+		 this.setTeamsList( DataSaverRetrieval.readTeamsFromDatabase( this.getProjectsList(), this.getStudentsList()) );
+
+		// For each team
 		this.getTeamsList().forEach( (teamId, team) -> {
 
 			// Updating the student current project allocation as well
@@ -602,11 +607,8 @@ public class ProjectTeamFormationMain {
 			}
 		});
 
-//		this.studentsList.values().stream().forEach((s)->{
-//			System.out.println("3-- "+s.getCurrProjAssoc());
-//		});
-
-		System.out.println(this.getTeamsList().size());
+		System.out.println(this.getTeamsList());
+		System.out.println("Team Size : "+this.getTeamsList().size());
 	}
 
 
@@ -830,7 +832,7 @@ public class ProjectTeamFormationMain {
 		// Sum / numberOfTeams - mean of skill competency
 		double meanPrefPrct = 0;
 
-		// Iterate over each team member to get the sum of skill competency of all projects
+		// Iterate over each team member to get the sum of preference allocation in all projects
 		for (Team team : this.teamsList.values()) {
 			sumPrefPrct += team.getPrctStudentReceivedPreference();
 		}
@@ -945,7 +947,7 @@ public class ProjectTeamFormationMain {
 		return teamsList;
 	}
 
-	public void setTeamsList(HashMap<String, Team> teamsList) {
+	public void setTeamsList(LinkedHashMap<String, Team> teamsList) {
 		this.teamsList = teamsList;
 	}
 

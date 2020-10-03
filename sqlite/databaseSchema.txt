@@ -39,9 +39,9 @@ CREATE TABLE `projects` (
 CREATE TABLE `team` (
 	`id` varchar(10) NULL,
 	`allocatedProjectId` varchar(10) DEFAULT NULL,
-	`prctStudentReceivedPreference` double(10,5) DEFAULT NULL,
-	`avgProjSkillComp` double(10,5) DEFAULT NULL,
-	`totalSkillShortage` double(10,5) DEFAULT NULL,
+	`prctStudentReceivedPreference` double(10,5) DEFAULT 0.0,
+	`avgProjSkillComp` double(10,5) DEFAULT 0.0,
+	`totalSkillShortage` double(10,5) DEFAULT 0.0,
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (allocatedProjectId) REFERENCES projects(id)
 );

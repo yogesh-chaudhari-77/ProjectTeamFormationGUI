@@ -1,9 +1,8 @@
-/**
+package main; /**
  * References :
  * [1] Releases · xerial/sqlite-jdbc
  * Releases · xerial/sqlite-jdbc (2020). Available at: https://github.com/xerial/sqlite-jdbc/releases (Accessed: 12 September 2020).
  */
-package controller;
 
 import globals.Globals;
 import model.entities.*;
@@ -190,7 +189,7 @@ public class DataSaverRetrieval {
 	}
 
 	
-	// Read projects from file, create a new project objects and stores that in the companiesList
+	// Read projects from file, create a new project objects and stores that in the projectsList
 	public static HashMap<String, Project> readProjectsFile() {
 
 		System.out.println("Reading projects file . . . ");
@@ -531,14 +530,14 @@ public class DataSaverRetrieval {
 	/*
 	 * Read the serialised data and return the Hashmap containing previously formed teams
 	 */
-	public static HashMap<String, Team> readTeamsFile(){
+	public static LinkedHashMap<String, Team> readTeamsFile(){
 
-		HashMap<String, Team> teamsList = new HashMap<String, Team>();
+		LinkedHashMap<String, Team> teamsList = new LinkedHashMap<String, Team>();
 		if(fileHandler.setBinaryFile(Globals.TEAMS_TXT, "read")) {
 
 			try {
 
-				teamsList = ((HashMap<String, Team>) fileHandler.readSerializedObj());
+				teamsList = ((LinkedHashMap<String, Team>) fileHandler.readSerializedObj());
 
 			} catch (ClassNotFoundException | IOException e ) {
 				e.printStackTrace();
@@ -587,6 +586,8 @@ public class DataSaverRetrieval {
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 		}
+
+		dbHelper.closeConnetion();
 	}
 
 
@@ -623,6 +624,8 @@ public class DataSaverRetrieval {
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 		}
+
+		dbHelper.closeConnetion();
 	}
 
 	/**
@@ -659,6 +662,9 @@ public class DataSaverRetrieval {
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 		}
+
+		dbHelper.closeConnetion();
+
 	}
 
 	/**
@@ -702,7 +708,7 @@ public class DataSaverRetrieval {
 				stmt = conn.prepareStatement(sql);
 				stmt.setString(1, project.getId());
 				stmt.setString(2, (project.getTeamRef() == null) ? "null" : project.getTeamRef().getTeamId());
-
+				stmt.executeUpdate();
 
 				// Write project requirements entry
 				for(Map.Entry<String, Integer> entry : project.getSoughtSkills().entrySet()){
@@ -718,11 +724,13 @@ public class DataSaverRetrieval {
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 		}
+
+		dbHelper.closeConnetion();
 	}
 
 
 	/**
-	 * Insert teams into the database
+	 * Insert students into the database
 	 */
 	public static void writeStudentsToDatabase(HashMap<String, Student> studentsList){
 
@@ -792,7 +800,10 @@ public class DataSaverRetrieval {
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 		}
+
+		dbHelper.closeConnetion();
 	}
+
 
 
 	/**
@@ -810,6 +821,21 @@ public class DataSaverRetrieval {
 			String sql = "DELETE FROM team_members_rel";
 			Statement deleteStmt = conn.createStatement();
 			deleteStmt.executeUpdate(sql);
+
+			// Drop the table
+			Statement cre_stmt = conn.createStatement();
+			cre_stmt.executeUpdate("DROP TABLE team_members_rel");
+
+			// Create the table again
+			String create_team_members_rel = "CREATE TABLE `team_members_rel` (" +
+					"`teamId` varchar(10) NULL," +
+					"`studentId` varchar(10) NULL," +
+					"PRIMARY KEY (`teamId`, `studentId`)," +
+					"FOREIGN KEY (teamId) REFERENCES team(id)," +
+					"FOREIGN KEY (studentId) REFERENCES student(id)" +
+					");";
+
+			cre_stmt.executeUpdate(create_team_members_rel);
 
 			for(Team team : teams.values()){
 
@@ -832,9 +858,17 @@ public class DataSaverRetrieval {
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 		}
+
+		dbHelper.closeConnetion();
 	}
 
 
+	/**
+	 * Reading students list from the database
+	 * Students list is read from student file, then grades and personality and conflicts are read from respective relations
+	 * @param studentsList
+	 * @return
+	 */
 	public static HashMap<String, Student>  readStudentInfoFromDatabase(HashMap<String, Student> studentsList) {
 		System.out.println("Reading student info from database . . .");
 
@@ -867,7 +901,71 @@ public class DataSaverRetrieval {
 			System.out.println(s.toString());
 		}
 
+		dbHelper.closeConnetion();
+
 		return studentsList;
 	}
+
+
+	/*
+	 * Read formed team from database
+	 *
+	 */
+	public static LinkedHashMap<String, Team> readTeamsFromDatabase(HashMap<String, Project> allProjectsList, HashMap <String, Student> allStudentsList){
+
+		System.out.println("Reading Teams info from database . . .");
+
+		LinkedHashMap<String, Team> retTeams = new LinkedHashMap<String, Team>();
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = dbHelper.getDBConnection();
+
+			ResultSet rs = dbHelper.runSimpleQuery("SELECT id, allocatedProjectId, prctStudentReceivedPreference, avgProjSkillComp, totalSkillShortage from team");
+
+			while(rs.next()){
+
+				Team tempTeam = new Team();
+				HashMap <String, Student> members = new HashMap<String, Student>();
+
+				// Set id and allocated project
+				tempTeam.setTeamId( rs.getString("id") );
+				tempTeam.setProjectRef( allProjectsList.get( rs.getString("allocatedProjectId") ) );
+
+				// Read students and add them as members
+				ResultSet members_rs = dbHelper.runSimpleQuery("SELECT studentId from team_members_rel where teamId = '"+rs.getString("id")+"'");
+				while(members_rs.next()){
+					members.put(members_rs.getString("studentId"), allStudentsList.get(members_rs.getString("studentId")));
+				}
+
+				tempTeam.setMembers(members);
+				// Setting  members end
+
+				// Set the stats of the team
+				tempTeam.setPrctStudentReceivedPreference( Double.parseDouble( rs.getString("prctStudentReceivedPreference") ) );
+				tempTeam.setAvgProjSkillComp( Double.parseDouble(rs.getString("avgProjSkillComp")) );
+				tempTeam.setTotalSkillShortage( Double.parseDouble(rs.getString("totalSkillShortage")) );
+
+				retTeams.put(tempTeam.getTeamId(), tempTeam);
+			}
+
+		} catch ( Exception e ) {
+			System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+		}
+
+		System.out.println(retTeams.size());
+
+		for (Team t : retTeams.values()) {
+			System.out.println(t.toString());
+		}
+
+		dbHelper.closeConnetion();
+
+		System.out.println("Read teams list :"+retTeams.size());
+		return retTeams;
+	}
+
 
 }

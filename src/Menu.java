@@ -1,4 +1,3 @@
-import controller.ProjectTeamFormationMain;
 import globals.Globals;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -10,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import main.ProjectTeamFormationMain;
 import model.entities.Student;
 import model.entities.Team;
 import utilities.ScannerUtil;

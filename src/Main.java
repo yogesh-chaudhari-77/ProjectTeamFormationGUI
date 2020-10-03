@@ -10,7 +10,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/views/VisualSensitiveAnalysis.fxml"));
         primaryStage.setTitle("Project Team Formation v 0.1");
-        primaryStage.setScene(new Scene(root, 750, 600));
+        primaryStage.setScene(new Scene(root, 750, 581));
         primaryStage.show();
     }
 
