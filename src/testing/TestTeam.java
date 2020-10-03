@@ -1,6 +1,6 @@
 package testing;
 
-import controller.ProjectTeamFormationMain;
+import main.ProjectTeamFormationMain;
 import model.entities.Project;
 import model.entities.Student;
 import model.entities.Team;

@@ -1,6 +1,6 @@
 package testing;
 
-import controller.ProjectTeamFormationMain;
+import main.ProjectTeamFormationMain;
 import org.junit.*;
 
 /**

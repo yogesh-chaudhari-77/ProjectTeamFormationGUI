@@ -15,22 +15,22 @@ public class Team implements Serializable{
 	private Project projectRef;
 	
 	// Stores the students ref who are member of this team
-	private HashMap<String, Student> members;
+	private HashMap<String, Student> members = new HashMap<String, Student>();
 	
 	// Avg skill competency per category
-	private HashMap<String, Double> avgCategorySkillComp;
+	private HashMap<String, Double> avgCategorySkillComp = new HashMap<String, Double>();
 	
 	// Avg category shortage per category (Required Skill Competency - (Avg skill competency in that category))
-	private HashMap<String, Double> avgCategorySkillShortage;
+	private HashMap<String, Double> avgCategorySkillShortage = new HashMap<String, Double>();
 	
 	// How many students wanted this project - in percentage
-	private double prctStudentReceivedPreference;
+	private double prctStudentReceivedPreference = 0.0;
 	
 	// Avg of skill competency for the project = sum(All skills) / (number of students * number of subjects)
-	private double avgProjSkillComp;
+	private double avgProjSkillComp = 0.0;
 	
 	// Sum of all shortages
-	private double totalSkillShortage;
+	private double totalSkillShortage = 0.0;
 	
 	
 	public Team() {
@@ -119,7 +119,6 @@ public class Team implements Serializable{
 	 */
 	public void addMember(Project projRef, Student s) throws InvalidMemberException, RepeatedMemberException, StudentConflictException, ExcessMemberException, NoLeaderException, PersonalityImbalanceException {
 
-
 		// Add member to the team
 		this.addMember(s);
 
@@ -132,7 +131,6 @@ public class Team implements Serializable{
 		// Check leader and personality imbalance exceptions only after team of 4 is formed
 		if(this.getMembers().size() == defaultTeamSize){
 			this.checkIfLeaderExists();
-			this.checkIfPersonalityImbalance();
 		}
 
 		// Updating the statistics
@@ -213,13 +211,13 @@ public class Team implements Serializable{
 			// Of same personality type say b,b,b
 			if(personalityTypes.size() == 1) {
 
-				throw new PersonalityImbalanceException("Duplicate personalities");
+				throw new PersonalityImbalanceException("Imbalanced personalities");
 			}
 		}else if( this.members.size() == 4 ) {
 
 			// When complete team has been formed
 			if(personalityTypes.size() < 3) {
-				throw new PersonalityImbalanceException("Duplicate personalities");
+				throw new PersonalityImbalanceException("Imbalanced personalities");
 			}
 		}
 		
@@ -260,7 +258,8 @@ public class Team implements Serializable{
 	public void computeAvgSkillForProject() {
 		
 		int studentCount = this.getMembers().size();
-		int totalCount = studentCount * this.getAvgCategorySkillComp().size();		// Divident
+		// int totalCount = studentCount * this.getAvgCategorySkillComp().size();		// Divident
+		int totalCount = studentCount;													// Divident -- already having avg category marks
 		double totalSum = 0;
 		
 		for(Double avgVal : this.getAvgCategorySkillComp().values()) {
@@ -326,7 +325,7 @@ public class Team implements Serializable{
 				if(preferenceId.contentEquals(this.projectRef.getId())) {
 					
 					// If this students preference is 1 or 2 then consider this student as success
-					if(( projPreference.get(preferenceId) == 1 || projPreference.get(preferenceId) == 2 )) {
+					if(( projPreference.get(preferenceId) == 3 || projPreference.get(preferenceId) == 4 )) {
 						count += 1;
 						break;
 					}
