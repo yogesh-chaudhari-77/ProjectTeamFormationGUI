@@ -8,9 +8,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+
         Parent root = FXMLLoader.load(getClass().getResource("/views/VisualSensitiveAnalysis.fxml"));
-        primaryStage.setTitle("Project Team Formation v 0.1");
-        primaryStage.setScene(new Scene(root, 750, 581));
+
+        primaryStage.setTitle("Project Team Formation v 1.0");
+        Scene myScene = new Scene(root, 750, 581);
+        primaryStage.setScene(myScene);
+
         primaryStage.show();
     }
 

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class ProjectTeamFormationMain {
 
 	private boolean quit = false;
+
 	private ScannerUtil scannerUtil = ScannerUtil.createInstance().consoleReader();
 	private FileHandlingHelper fileHandler = FileHandlingHelper.init();
 
@@ -60,7 +61,7 @@ public class ProjectTeamFormationMain {
 
 		switch (userChoice) {
 
-		case Globals.OPT_ADD_COMPANY: // A
+		case Globals.OPT_ADD_COMPANY: 						// A
 			Company tempComp = this.addCompany();
 			if (tempComp != null) {
 
@@ -76,7 +77,7 @@ public class ProjectTeamFormationMain {
 			}
 			break;
 
-		case Globals.OPT_ADD_PROJ_OWNER: // B
+		case Globals.OPT_ADD_PROJ_OWNER: 					// B
 
 			ProjectOwner retProjOwner = this.addProjectOwner();
 			if (retProjOwner != null) {
@@ -87,7 +88,7 @@ public class ProjectTeamFormationMain {
 			}
 			break;
 
-		case Globals.OPT_ADD_PROJ: // C
+		case Globals.OPT_ADD_PROJ: 							// C
 			Project tempProj = this.addProject();
 			if (tempProj != null) {
 
@@ -98,7 +99,7 @@ public class ProjectTeamFormationMain {
 			}
 			break;
 
-		case Globals.OPT_CAPTURE_STUD_PERSONALITIES: // D
+		case Globals.OPT_CAPTURE_STUD_PERSONALITIES: 		// D
 
 			// Captures the student personalities such as A, B, C, D
 			this.captuerStudentPersonalities();
@@ -110,14 +111,14 @@ public class ProjectTeamFormationMain {
 			DataSaverRetrieval.writeStudentInfoFile(this.getStudentsList());
 			break;
 
-		case Globals.OPT_ADD_STUD_PREFERENCES: // E
+		case Globals.OPT_ADD_STUD_PREFERENCES: 				// E
 
 			// Capture student's project preferences
 			this.captureStudentPreferences();
 			DataSaverRetrieval.writeStudentPreferences(this.getStudentsList());
 			break;
 
-		case Globals.OPT_SHORTLIST_PROJ: // F
+		case Globals.OPT_SHORTLIST_PROJ: 					// F
 
 			// Score the individual projects popularity based on all student's preferences
 			this.calProjectsPrefSum();
@@ -160,6 +161,7 @@ public class ProjectTeamFormationMain {
 		case Globals.OPT_QUIT: 						// Q
 
 			this.saveDataToFiles();
+			this.saveDataToDatabase();
 			this.setQuit(true);
 			break;
 
@@ -533,7 +535,7 @@ public class ProjectTeamFormationMain {
 		// Do not reorder the original list
 		HashMap<String, Project> copyOfProjs = (HashMap<String, Project>) this.getProjectsList().clone();
 
-		// sort the projects based on score they received, then limit the projects to num(students)/4 as per project can have max of 4 students
+		// [9] - sort the projects based on score they received, then limit the projects to num(students)/4 as per project can have max of 4 students
 		LinkedHashMap<String, Project> sortedProjs = copyOfProjs.entrySet().stream()
 
 				.sorted((proj1, proj2) -> Integer.compare(proj2.getValue().getProjectPrefSum(),
@@ -560,9 +562,9 @@ public class ProjectTeamFormationMain {
 		// Read Students Data
 		this.setStudentsList(DataSaverRetrieval.readStudentsFile());
 		DataSaverRetrieval.readStudentPreferencesFile(this.getStudentsList());
-		// main.DataSaverRetrieval.readStudentInfoFile(this.getStudentsList());
+		DataSaverRetrieval.readStudentInfoFile(this.getStudentsList());
 
-		DataSaverRetrieval.readStudentInfoFromDatabase(this.getStudentsList());
+		// DataSaverRetrieval.readStudentInfoFromDatabase(this.getStudentsList());
 
 		this.getStudentsList().values().forEach((student) -> System.out.println(student));
 
@@ -588,10 +590,10 @@ public class ProjectTeamFormationMain {
 		this.setShortListedProjectsList( this.discardLeastPopularProj() );
 
 		// Milestone 2 - Read teams serialised files
-		// this.setTeamsList( main.DataSaverRetrieval.readTeamsFile() );
+		this.setTeamsList( main.DataSaverRetrieval.readTeamsFile() );
 
 		// Milestone 4 - Updated for reading from database
-		 this.setTeamsList( DataSaverRetrieval.readTeamsFromDatabase( this.getProjectsList(), this.getStudentsList()) );
+		// this.setTeamsList( DataSaverRetrieval.readTeamsFromDatabase( this.getProjectsList(), this.getStudentsList()) );
 
 		// For each team
 		this.getTeamsList().forEach( (teamId, team) -> {
@@ -725,6 +727,7 @@ public class ProjectTeamFormationMain {
 	}
 
 	/*
+	 * Text taken from assignment specification
 	 * Team-Fitness Metrics A : Average student skill competency for each project
 	 * team B : Percentage of students who got their first and second preferences in
 	 * each of the teams. C : Skills shortfall for each project based on categories
@@ -734,50 +737,53 @@ public class ProjectTeamFormationMain {
 	public void teamFitnessMetricOperations(String userChoice) {
 
 		switch (userChoice) {
-		case "A": {
 
-			for (Team teamRef : this.getTeamsList().values()) {
-				System.out.println(teamRef.getTeamId() + " -> " + teamRef.getProjectRef().getId() + " -> "
-						+ teamRef.getAvgProjSkillComp());
+			// Average student skill competency for each project
+			case "A": {
+
+				for (Team teamRef : this.getTeamsList().values()) {
+					System.out.println(teamRef.getTeamId() + " |-> " + teamRef.getProjectRef().getId() + " -> "
+							+ teamRef.getAvgProjSkillComp());
+				}
+
 			}
+			break;
 
-		}
-		break;
+			// Percentage of students who got their first and second (Numerically 3, 4) preferences in each of the teams
+			case "B": {
 
-		case "B": {
+				for (Team teamRef : this.getTeamsList().values()) {
+					System.out.println(teamRef.getTeamId() + " |-> " + teamRef.getProjectRef().getId() + " -> "
+							+ teamRef.getPrctStudentReceivedPreference());
+				}
 
-			for (Team teamRef : this.getTeamsList().values()) {
-				System.out.println(teamRef.getTeamId() + " -> " + teamRef.getProjectRef().getId() + " -> "
-						+ teamRef.getPrctStudentReceivedPreference());
 			}
+			break;
 
-		}
-		break;
+			// Skills shortfall for each project based on categories in which the average grade for a skill category - Referenced from the assignment specification
+			case "C": {
 
-		case "C": {
+				for (Team teamRef : this.getTeamsList().values()) {
+					System.out.println(teamRef.getTeamId() + " |-> " + teamRef.getProjectRef().getId());
 
-			for (Team teamRef : this.getTeamsList().values()) {
-				System.out.println(teamRef.getTeamId() + " -> " + teamRef.getProjectRef().getId());
-
-				for (String subId : teamRef.getAvgCategorySkillShortage().keySet()) {
-					if (teamRef.getAvgCategorySkillShortage().get(subId) < 0) {
-						System.out.println(subId + " -> " + teamRef.getAvgCategorySkillShortage().get(subId));
+					for (String subId : teamRef.getAvgCategorySkillShortage().keySet()) {
+						if (teamRef.getAvgCategorySkillShortage().get(subId) < 0) {
+							System.out.println(subId + " |-> " + teamRef.getAvgCategorySkillShortage().get(subId));
+						}
 					}
 				}
+
 			}
+			break;
 
-		}
-		break;
+			case "Q" :{
+				// Do nothing
+			}
+			break;
 
-		case "Q" :{
-			// Do nothing
+			default:
+				System.err.println("Wrong option. Please enter option from the menu");
 		}
-		break;
-		
-		default:
-			System.err.println("Wrong option. Please enter option from the menu");
-		}
-
 	}
 
 	/*

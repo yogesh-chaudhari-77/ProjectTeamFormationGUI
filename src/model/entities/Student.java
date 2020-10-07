@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Student implements Serializable {
+public class Student implements Serializable, Cloneable{
 	
 	private static final long serialVersionUID = 1479813639469477032L;
 
@@ -29,6 +29,7 @@ public class Student implements Serializable {
 
 	private Team currTeamAssoc;
 
+	private int sumGrades = 0;
 
 	// Constructor one accepting all fields
 	public Student(String id, String personality, HashMap<String, Integer> grades, HashMap<String, Integer> preferences) {
@@ -162,5 +163,20 @@ public class Student implements Serializable {
 	public void setCurrTeamAssoc(Team currTeamAssoc) {
 		this.currTeamAssoc = currTeamAssoc;
 	}
+
+	public int getSumGrades() {
+		return sumGrades;
+	}
+
+	public void setSumGrades(int sumGrades) {
+		this.sumGrades = sumGrades;
+	}
+
 	// Getters-Setters Ends Here
+
+	// [6] Clone method for deep cloning, since team contains student's reference
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 }

@@ -8,7 +8,7 @@ import model.exceptions.*;
 import org.junit.*;
 
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * 
@@ -94,8 +94,8 @@ public class TestTeam {
 		
 		// Forming new team T3 for the project Pr3 with s1, s2,s3, s4 students
 		Team tempTeam = new Team("T3", this.pjT.getShortListedProjectsList().get("Pr3"));
-		
-		HashMap<String, Student> hash = new HashMap<String, Student>();
+
+		LinkedHashMap<String, Student> hash = new LinkedHashMap<String, Student>();
 		hash.put("s1", this.pjT.getStudentsList().get("s1"));
 		hash.put("s2", this.pjT.getStudentsList().get("s2"));
 		hash.put("s3", this.pjT.getStudentsList().get("s3"));
@@ -121,8 +121,8 @@ public class TestTeam {
 	public void test_prctStudentReceivedPreference() throws NoLeaderException {
 		
 		Team tempTeam = new Team("T1", this.pjT.getShortListedProjectsList().get("Pr3"));
-		
-		HashMap<String, Student> hash = new HashMap<String, Student>();
+
+		LinkedHashMap<String, Student> hash = new LinkedHashMap<String, Student>();
 		hash.put("s1", this.pjT.getStudentsList().get("s1"));
 		hash.put("s2", this.pjT.getStudentsList().get("s2"));
 		hash.put("s3", this.pjT.getStudentsList().get("s3"));
@@ -260,8 +260,8 @@ public class TestTeam {
 	public void testAddMembers_NoLeader() throws NoLeaderException {
 		
 		Team tempTeam = new Team();
-		
-		HashMap<String, Student> hash = new HashMap<String, Student>();
+
+		LinkedHashMap<String, Student> hash = new LinkedHashMap<String, Student>();
 		hash.put("s7", this.pjT.getStudentsList().get("s14"));
 		hash.put("s8", this.pjT.getStudentsList().get("s18"));
 		hash.put("s9", this.pjT.getStudentsList().get("s8"));
@@ -283,8 +283,8 @@ public class TestTeam {
 		
 		// Forming new team T3 for the project Pr3 with s1, s2,s3, s4 students 
 		Team tempTeam = new Team("T3", this.pjT.getShortListedProjectsList().get("Pr3"));
-		
-		HashMap<String, Student> hash = new HashMap<String, Student>();
+
+		LinkedHashMap<String, Student> hash = new LinkedHashMap<String, Student>();
 		hash.put("s1", this.pjT.getStudentsList().get("s1"));
 		hash.put("s2", this.pjT.getStudentsList().get("s2"));
 		hash.put("s3", this.pjT.getStudentsList().get("s3"));

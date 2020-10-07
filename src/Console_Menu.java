@@ -67,6 +67,7 @@ public class Console_Menu{
 
 	
 	// Prints the sub menu for the team fitenss metric operations
+	// Menu text has been taken from the assignment specification.
 	public void showDisplayTeamFitnessSubMenu() {
 		
 		System.out.println("\t\t\t Sub Menu \t\t\t");

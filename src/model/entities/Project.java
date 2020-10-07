@@ -5,7 +5,7 @@ import globals.Globals;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class Project implements Serializable {
+public class Project implements Serializable, Cloneable {
 	
 	
 	private static final long serialVersionUID = -9024218799680537993L;
@@ -134,4 +134,10 @@ public class Project implements Serializable {
 	}
 	
 	// Getters-Setters Ends Here
+
+	// [6] Returns the copy of project - for cloaning implemented in team class
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 }

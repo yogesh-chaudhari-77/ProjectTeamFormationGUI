@@ -16,7 +16,7 @@ import utilities.ScannerUtil;
 
 import java.util.HashMap;
 
-public class Menu  extends Application {
+public class Menu extends Application {
 
 	private boolean quit = false;
 	static ProjectTeamFormationMain driver = new ProjectTeamFormationMain();
