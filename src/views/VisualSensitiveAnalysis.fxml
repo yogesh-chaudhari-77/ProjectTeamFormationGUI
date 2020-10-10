@@ -192,6 +192,7 @@
                     <items>
                         <Button fx:id="suggestBtn" mnemonicParsing="false" onMouseClicked="#showSugestions" prefHeight="39.0" prefWidth="88.0" text="Suggest" />
                         <Button fx:id="undoBtn" mnemonicParsing="false" onMouseClicked="#undoAction" prefHeight="39.0" prefWidth="87.0" text="Undo" />
+                        <Button fx:id="redoBtn" mnemonicParsing="false" onMouseClicked="#redoAction" prefHeight="39.0" prefWidth="87.0" text="Redo" />
                     </items>
                   </ToolBar>
                </children>

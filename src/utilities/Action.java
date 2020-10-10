@@ -12,4 +12,7 @@ public interface Action {
 
     // Performs reversed operation, corrections you may say
     void undo();
+
+    // Whatever has been undone, can be redone
+    void redo();
 }

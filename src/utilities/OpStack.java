@@ -32,7 +32,7 @@ public class OpStack<T> {
 
 
     /**
-     * Removes and returns the last performed operation
+     * Removes and returns the last performed operation, represented by last element of the list
      * @return
      */
     T pop() {

@@ -13,6 +13,7 @@ import java.util.HashMap;
  * Strategies :
  *          Skill Shortfall,
  *          Skill Competency
+ *          Preference Allocation
  */
 
 public class SuggesterEngine extends Thread{
@@ -27,13 +28,20 @@ public class SuggesterEngine extends Thread{
     private double prevStdPref = 0.0;
     private double prevStdSkillComp = 0.0;
     private double prevStdSkillShortfall = 0.0;
+    private double sumPrevStds = 0.0;
 
     // Deviations values after suggestion implementation
     private double currStdPref = 0.0;
     private double currStdSkillComp = 0.0;
     private double currStdSkillShortfall = 0.0;
+    private double sumCurrStds = 0.0;
 
+    // Initial strategy
     private String currentStrategy = "skillcomp";
+
+    // Applied strategies are stored here to avoid looping
+    ArrayList<String> strategies = new ArrayList<>();
+
 
     public SuggesterEngine(HashMap<String, Team> clonedTeams) throws CloneNotSupportedException {
 
@@ -48,8 +56,9 @@ public class SuggesterEngine extends Thread{
         this.suggestions = new ArrayList<String>();
     }
 
+
     public void makeCopy(ArrayList<Team> passedCopy){
-        this.teamsCopy = (ArrayList<Team>) passedCopy.clone();
+        this.teamsCopy = (ArrayList<Team>) passedCopy;  // I used to clone here, no required
         this.storePrevValues();
     }
 
@@ -57,24 +66,19 @@ public class SuggesterEngine extends Thread{
     // Stores the previous values of the standard dadivations
     public void storePrevValues(){
 
-        for(int i = 0; i < this.teamsCopy.size(); i++){
-            prevStdPref += teamsCopy.get(i).getPrctStudentReceivedPreference();
-            prevStdSkillComp += teamsCopy.get(i).getAvgProjSkillComp();
-            prevStdSkillShortfall += teamsCopy.get(i).getTotalSkillShortage();
-        }
+        this.prevStdSkillComp = this.sDInSkillCompetency();
+        this.prevStdPref = this.sDInProjPrefAllocPrct();
+        this.prevStdSkillShortfall = this.sDInShortFallAcrossTeam();
+        sumPrevStds = prevStdSkillComp + prevStdPref + prevStdSkillShortfall;
     }
 
     // Stores the current values of the standard deviations
     public void storeCurrValues(){
 
-        for(int i = 0; i < this.teamsCopy.size(); i++){
-
-            teamsCopy.get(i).updateStatistics();
-
-            currStdPref += teamsCopy.get(i).getPrctStudentReceivedPreference();
-            currStdSkillComp += teamsCopy.get(i).getAvgProjSkillComp();
-            currStdSkillShortfall += teamsCopy.get(i).getTotalSkillShortage();
-        }
+        this.currStdSkillComp = this.sDInSkillCompetency();
+        this.currStdPref = this.sDInProjPrefAllocPrct();
+        this.currStdSkillShortfall = this.sDInShortFallAcrossTeam();
+        sumCurrStds = prevStdSkillComp + prevStdPref + prevStdSkillShortfall;
     }
 
     /**
@@ -85,14 +89,39 @@ public class SuggesterEngine extends Thread{
     }
 
 
+    /**
+     * Decides the current strategy
+     * skillComp -> skill shortfall -> pref_alloc
+     */
+    public void strategyDecision()
+    {
+        if(strategies.size() == 0) {
+            strategies.add("skillcomp");
+        }else if(strategies.size() == 1){
+            strategies.add("skillshortfall");
+        }else{
+            strategies.add("preference_alloc");
+        }
 
-    public void strategyDecision(){
+        switch (strategies.get( strategies.size() - 1 )){
+            case "skillcomp" :{
+                currentStrategy = "skillcomp";
+                this.teamsCopy.sort(Comparator.comparing( (t) -> t.getAvgProjSkillComp()));
+            }
+            break;
 
-        // Purposely kept here. to be able to change the strategy
-        if(currentStrategy == "skillcomp"){
-            this.teamsCopy.sort(Comparator.comparing( (t) -> t.getAvgProjSkillComp()));
-        }else if(currentStrategy == "skillshortfall"){
-            this.teamsCopy.sort(Comparator.comparing( (t) -> t.getTotalSkillShortage()));
+            case "skillshortfall" :{
+                currentStrategy = "skillshortfall";
+                this.teamsCopy.sort(Comparator.comparing( (t) -> t.getTotalSkillShortage()));
+            }
+            break;
+
+            case "preference_alloc" :{
+                currentStrategy = "preference_alloc";
+                this.teamsCopy.sort(Comparator.comparing( (t) -> t.getPrctStudentReceivedPreference()));
+            }
+            break;
+
         }
     }
 
@@ -106,9 +135,9 @@ public class SuggesterEngine extends Thread{
 
         for(int i = 0; i < teamsCopy.size(); i++){
 
-            System.out.println(currentStrategy);
-
             strategyDecision();
+
+            System.out.println(currentStrategy);
 
             Team team1 = this.teamsCopy.get(i);
             Team team2 = this.teamsCopy.get(this.teamsCopy.size() - 1);
@@ -163,6 +192,9 @@ public class SuggesterEngine extends Thread{
 
                 this.storeCurrValues();
 
+                System.out.println("Previous Stds Sum : "+sumPrevStds);
+                System.out.println("Current Stds Sum : "+sumCurrStds);
+
                 // One possible Suggestion
                 suggestions.add(s1.getId() + " swap with "+s2.getId());
 
@@ -185,16 +217,8 @@ public class SuggesterEngine extends Thread{
                 }
             }
 
-            // If reached at the middle, change the strategy
-            if( i > this.teamsCopy.size()/2){
-                if(this.currentStrategy != "skillshortfall"){
-                    this.suggestions.add("");
-                    this.currentStrategy = "skillshortfall";
-                    i = 0;
-                    continue;
-                }else{
-                    break;
-                }
+            if(this.strategies.size() == 3){
+                break;
             }
         }
     }
@@ -291,4 +315,104 @@ public class SuggesterEngine extends Thread{
 
 
     // Getter Setter Ends Here
+
+
+
+    public double sDInSkillCompetency() {
+
+        // Sum the skill competency of all projects for calculating mean
+        double sumSkillCompetency = 0;
+
+        // Number of teams
+        int numOfTeams = this.teamsCopy.size();
+
+        // Sum / numberOfTeams - mean of skill competency
+        double meanSkillCompetency = 0;
+
+        // Iterate over each team member to get the sum of skill competency of all projects
+        for (Team team : this.teamsCopy) {
+            sumSkillCompetency += team.getAvgProjSkillComp();
+        }
+
+        meanSkillCompetency = sumSkillCompetency / numOfTeams;
+
+        // Calculating the SD here
+        double temp = 0;
+        for (Team team : this.teamsCopy) {
+            temp += Math.pow((team.getAvgProjSkillComp() - meanSkillCompetency), 2);
+        }
+
+        double sd = Math.sqrt((temp/numOfTeams));
+        return sd;
+    }
+
+
+	/*
+	 * 24-08-2020 - Standard deviation for percentage of project members getting first and second project preferences across
+					projects
+	 */
+
+    public double sDInProjPrefAllocPrct() {
+
+        // Sum the skill competency of all projects for calculating mean
+        double sumPrefPrct = 0;
+
+        // Number of teams
+        int numOfTeams = this.teamsCopy.size();
+
+        // Sum / numberOfTeams - mean of skill competency
+        double meanPrefPrct = 0;
+
+        // Iterate over each team member to get the sum of preference allocation in all projects
+        for (Team team : this.teamsCopy) {
+            sumPrefPrct += team.getPrctStudentReceivedPreference();
+        }
+
+        meanPrefPrct = sumPrefPrct / numOfTeams;
+
+        // Calculating the SD here
+        double temp = 0;
+        for (Team team : this.teamsCopy) {
+            temp += Math.pow((team.getPrctStudentReceivedPreference() - meanPrefPrct), 2);
+        }
+
+
+        double sd = Math.sqrt((temp/numOfTeams));
+        return sd;
+    }
+
+
+    /*
+     * 24-08-2020 - Standard deviation of shortfall across teams
+     */
+
+    public double sDInShortFallAcrossTeam() {
+
+        // Sum the skill competency of all projects for calculating mean
+        double sumShortFall = 0;
+
+        // Number of teams
+        int numOfTeams = this.teamsCopy.size();
+
+        // Sum / numberOfTeams - mean of skill competency
+        double meanShortFall = 0;
+
+        // Iterate over each team member to get the sum of skill competency of all projects
+        for (Team team : this.teamsCopy) {
+            sumShortFall += team.getTotalSkillShortage();
+        }
+
+        meanShortFall = sumShortFall / numOfTeams;
+
+        // Calculating the SD here
+        double temp = 0;
+        for (Team team : this.teamsCopy) {
+            temp += Math.pow(( team.getTotalSkillShortage() - meanShortFall), 2);
+        }
+
+        double sd = Math.sqrt((temp/numOfTeams));
+
+        return sd;
+    }
+
 }

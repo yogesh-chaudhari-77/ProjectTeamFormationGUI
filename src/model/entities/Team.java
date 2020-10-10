@@ -483,6 +483,10 @@ public class Team implements Serializable, Cloneable, Action {
 		System.out.println(this.members.keySet());
 	}
 
+	@Override
+	public void redo(){
+		// We are not doing the redo for add operation
+	}
 
 	/**
 	 * Since we are using linked hasmap, we need to remove the last member from the members
