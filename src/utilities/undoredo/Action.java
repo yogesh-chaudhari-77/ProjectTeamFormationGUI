@@ -1,4 +1,4 @@
-package utilities;
+package utilities.undoredo;
 
 /**
  * Action interface that tells what needs to be done on execute and undo

@@ -1,4 +1,4 @@
-package utilities;
+package utilities.undoredo;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class OpStack<T> {
     private List<T> operations;
 
     // Creates a new stack
-    OpStack() {
+    public OpStack() {
         operations = new LinkedList<>();
     }
 
@@ -25,7 +25,7 @@ public class OpStack<T> {
      * The top element, will always represent the latest operations
      * @param item
      */
-    void push(T item) {
+    public void push(T item) {
         operations.add(operations.size(), item);
     }
 
@@ -35,7 +35,7 @@ public class OpStack<T> {
      * Removes and returns the last performed operation, represented by last element of the list
      * @return
      */
-    T pop() {
+    public T pop() {
         if(operations.size() > 0)
             return operations.remove(operations.size()-1);
         else

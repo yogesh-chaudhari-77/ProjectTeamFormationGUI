@@ -1,7 +1,7 @@
 package model.entities;
 
 import model.exceptions.*;
-import utilities.Action;
+import utilities.undoredo.Action;
 
 import java.io.Serializable;
 import java.util.HashMap;

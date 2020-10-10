@@ -1,5 +1,8 @@
 package utilities;
 
+import utilities.undoredo.Action;
+import utilities.undoredo.OpStack;
+
 import java.util.ArrayList;
 import java.util.List;
 
