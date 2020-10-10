@@ -5,7 +5,7 @@ import globals.Globals;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class Project implements Serializable {
+public class Project implements Serializable, Cloneable {
 	
 	
 	private static final long serialVersionUID = -9024218799680537993L;
@@ -35,6 +35,25 @@ public class Project implements Serializable {
 		this.soughtSkills.put(Globals.ANALYTICS_BIG_DATA, Globals.defaultSoughtSkill);
 		this.soughtSkills.put(Globals.WEB_MOBILE_APP, Globals.defaultSoughtSkill);
 	}
+
+	// For Testing Purpose
+	public Project(String id, String title, String description, String projectOwnerId, int P_skills, int N_skills, int A_skills, int W_skills, int projectPrefSum) {
+
+		this.id = id;
+		this.title = title;
+		this.description = description;
+		this.projectOwnerId = projectOwnerId;
+
+		// Hashmap for storing the skill requirements as per subjects codes
+		this.soughtSkills = new HashMap<String, Integer>();
+		this.soughtSkills.put(Globals.PROG_SOFT_ENGG, P_skills);
+		this.soughtSkills.put(Globals.NETWORK_SECURITY, N_skills);
+		this.soughtSkills.put(Globals.ANALYTICS_BIG_DATA, A_skills);
+		this.soughtSkills.put(Globals.WEB_MOBILE_APP, W_skills);
+
+		this.projectPrefSum = projectPrefSum;
+	}
+
 	// Constructors Ends Here
 	
 	
@@ -134,4 +153,10 @@ public class Project implements Serializable {
 	}
 	
 	// Getters-Setters Ends Here
+
+	// [6] Returns the copy of project - for cloaning implemented in team class
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 }

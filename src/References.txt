@@ -1,0 +1,42 @@
+// Email Regrex
+[1] Java Email Validation + Email Regex for Java | Mailtrap Blog
+Java Email Validation + Email Regex for Java | Mailtrap Blog (2020). Available at: https://blog.mailtrap.io/java-email-validation/ (Accessed: 6 October 2020).
+
+// URL regex
+[2]
+Java, R., Amo, S. and Lelonek, K.
+Java, R., Amo, S. and Lelonek, K. (2008) Regular expression to match URLs in Java, Stack Overflow. Available at: https://stackoverflow.com/questions/163360/regular-expression-to-match-urls-in-java (Accessed: 6 October 2020).
+
+// Company name regrex
+[3]
+Validation, J.
+Validation, J. (2017) Java Regex First Name Validation, Stack Overflow. Available at: https://stackoverflow.com/questions/46326822/java-regex-first-name-validation (Accessed: 6 October 2020).
+
+// Address Field
+[4]
+validation, R. and Arumugham, J.
+validation, R. and Arumugham, J. (2012) Regular expression for address field validation, Stack Overflow. Available at: https://stackoverflow.com/questions/11456670/regular-expression-for-address-field-validation (Accessed: 6 October 2020).
+
+// Sum using streams
+[5]
+Summing Numbers with Java Streams | Baeldung
+Summing Numbers with Java Streams | Baeldung (2019). Available at: https://www.baeldung.com/java-stream-sum (Accessed: 6 October 2020).
+
+// Deep Cloning
+[6]
+Gupta, L.
+Gupta, L. (2012) Java clone - deep and shallow copy - copy constructors, HowToDoInJava. Available at: https://howtodoinjava.com/java/cloning/a-guide-to-object-cloning-in-java/ (Accessed: 6 October 2020).
+
+[7]
+Using JavaFX Charts: Bar Chart | JavaFX 2 Tutorials and Documentation
+Using JavaFX Charts: Bar Chart | JavaFX 2 Tutorials and Documentation (2020). Available at: https://docs.oracle.com/javafx/2/charts/bar-chart.htm (Accessed: 6 October 2020).
+
+// JDBC Jar
+[8]
+Releases · xerial/sqlite-jdbc
+Releases · xerial/sqlite-jdbc (2020). Available at: https://github.com/xerial/sqlite-jdbc/releases (Accessed: 12 September 2020).
+
+// Sorting hashmap based on objects value
+[9]
+streams, S., Kasireddy, S. and Kumar, A.
+streams, S., Kasireddy, S. and Kumar, A. (2015) Sort map by value using lambdas and streams, Stack Overflow. Available at: https://stackoverflow.com/questions/29567575/sort-map-by-value-using-lambdas-and-streams (Accessed: 6 October 2020).

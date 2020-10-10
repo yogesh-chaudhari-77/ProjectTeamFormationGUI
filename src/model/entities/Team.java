@@ -1,12 +1,16 @@
 package model.entities;
+
 import model.exceptions.*;
+import utilities.Action;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
-public class Team implements Serializable{
+
+public class Team implements Serializable, Cloneable, Action {
 	
 	private static final long serialVersionUID = -5606452120005550219L;
 
@@ -15,7 +19,7 @@ public class Team implements Serializable{
 	private Project projectRef;
 	
 	// Stores the students ref who are member of this team
-	private HashMap<String, Student> members = new HashMap<String, Student>();
+	private LinkedHashMap<String, Student> members = new LinkedHashMap<String, Student>();
 	
 	// Avg skill competency per category
 	private HashMap<String, Double> avgCategorySkillComp = new HashMap<String, Double>();
@@ -36,7 +40,7 @@ public class Team implements Serializable{
 	public Team() {
 		this.teamId = "";
 		this.projectRef = null;
-		this.members = new HashMap<String, Student>();
+		this.members = new LinkedHashMap<String, Student>();
 		this.prctStudentReceivedPreference = 0;
 		this.avgCategorySkillComp = new HashMap<String, Double>();
 		this.avgCategorySkillShortage = new HashMap<String, Double>();
@@ -46,7 +50,7 @@ public class Team implements Serializable{
 	public Team(String teamId, Project projectRef) {
 		this.teamId = teamId;
 		this.projectRef = projectRef;
-		this.members = new HashMap<String, Student>();
+		this.members = new LinkedHashMap<String, Student>();
 		this.prctStudentReceivedPreference = 0;
 		this.avgCategorySkillComp = new HashMap<String, Double>();
 		this.avgCategorySkillShortage = new HashMap<String, Double>();
@@ -358,12 +362,12 @@ public class Team implements Serializable{
 
 	// Getter setters starts here	
 	
-	public HashMap<String, Student> getMembers() {
+	public LinkedHashMap<String, Student> getMembers() {
 		return members;
 	}
 	
 	
-	public void setMembers(HashMap<String, Student> members) {
+	public void setMembers(LinkedHashMap<String, Student> members) {
 		this.members = members;
 	}
 
@@ -438,6 +442,58 @@ public class Team implements Serializable{
 	}
 	
 	// Getter setter ends here
-	
-	
+
+	// [6] Deep cloning Team object
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+
+		// Cloning Team
+		Team clonedTeam = (Team)super.clone();
+
+		// Associated Project Reference
+		clonedTeam.setProjectRef((Project)clonedTeam.getProjectRef().clone());
+
+		// Cloning members
+		LinkedHashMap<String, Student> clonedMembers = new LinkedHashMap<>();
+		for(Student s : clonedTeam.getMembers().values()){
+			clonedMembers.put(s.getId(), (Student)s.clone());
+		}
+
+		clonedTeam.setMembers(clonedMembers);
+
+		return clonedTeam;
+	}
+
+	@Override
+	public void execute() {
+		System.out.println(this.getTeamId()+" added into stack");
+	}
+
+	@Override
+	public void undo() {
+		System.out.println("Before undo");
+		System.out.println(this.toString());
+		System.out.println(this.members.keySet());
+
+		this.removeMember(this.projectRef, this.getLastMemberInTeam());
+		this.updateStatistics();
+
+		System.out.println("After undo");
+		System.out.println(this.toString());
+		System.out.println(this.members.keySet());
+	}
+
+
+	/**
+	 * Since we are using linked hasmap, we need to remove the last member from the members
+	 */
+	public Student getLastMemberInTeam(){
+
+		Student lastStudent = null;
+		for(Student s : this.members.values()){
+			lastStudent = s;
+		}
+
+		return lastStudent;
+	}
 }

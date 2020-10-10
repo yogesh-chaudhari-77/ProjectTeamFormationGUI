@@ -5,9 +5,14 @@ import globals.Globals;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-/*
+/**
  *  Singleton class returns only one reference of scannerUtil which is being used everywhere for accepting user input.
  *  This class implements methods for handling input
+ *
+ *  Notes :
+ *  @author Yogeshwar Chaudhari
+ *  This is my original work and has been submitted earlier as part of every Programming Fundamental Assignment in Sem 1 - RMIT
+ *  The code is aslo being reused in Software Engineering Fundamentals group assignment.
  */
 
 public class ScannerUtil {
@@ -156,6 +161,8 @@ public class ScannerUtil {
 		
 		String derivedPatt = null;
 		switch(pattern) {
+
+			// [1] - References.txt
 			case Globals.EMAIL_PATT_IDENT:
 				derivedPatt = "^(.+)@(.+)$"; 
 			break;
@@ -167,15 +174,18 @@ public class ScannerUtil {
 			case Globals.ABN_PATT_IDENT :
 				derivedPatt = "^\\d{11}$";
 			break;
-			
+
+			// [2] - References.txt
 			case Globals.URL_PATT_IDENT:
 				derivedPatt = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
 			break;
-			
+
+			// [3] - References.txt
 			case Globals.COMP_NAME_PATT_IDENT:
 				derivedPatt = "(?i)(^[a-z])((?![ .,'-]$)[a-z .,'-]){0,24}$";
 			break;
-			
+
+			// [4] - References.txt
 			case Globals.ADDR_PATT_IDENT:
 				derivedPatt = "[A-Za-z0-9'//.//-//s//,]";
 			break;
@@ -192,9 +202,7 @@ public class ScannerUtil {
 	public String readYesNo(String inputMessage) {
 		String typedInput = "";
 		boolean success = false;
-		
-		
-		
+
 		do {
 			System.out.print(inputMessage);
 			typedInput = ScannerUtil.scannerInstance.consoleIn.nextLine();

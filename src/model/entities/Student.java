@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Student implements Serializable {
+public class Student implements Serializable, Cloneable{
 	
 	private static final long serialVersionUID = 1479813639469477032L;
 
@@ -29,6 +29,7 @@ public class Student implements Serializable {
 
 	private Team currTeamAssoc;
 
+	private int sumGrades = 0;
 
 	// Constructor one accepting all fields
 	public Student(String id, String personality, HashMap<String, Integer> grades, HashMap<String, Integer> preferences) {
@@ -52,7 +53,41 @@ public class Student implements Serializable {
 		this.currProjAssoc = "";
 		this.currTeamAssoc = null;
 	}
-	
+
+	// Constructor 3, Only for testing purpose
+	public Student(String id, int P_grades, int N_grades, int A_grades, int W_grades, String pref1, String pref2, String pref3, String pref4, String persoanlity, String conflict1, String conflict2) {
+
+		this.id = id;
+
+		// Setting grades
+		this.grades = new HashMap<>();
+		this.grades.put("P", P_grades);
+		this.grades.put("N", N_grades);
+		this.grades.put("A", A_grades);
+		this.grades.put("W", W_grades);
+
+		// Setting project preferences
+		this.projPreferences = new HashMap<>();
+		this.projPreferences.put(pref1, 1);
+		this.projPreferences.put(pref2, 2);
+		this.projPreferences.put(pref3, 3);
+		this.projPreferences.put(pref4, 4);
+
+		this.persoanlity = persoanlity;
+
+		// Setting conflicts
+		this.cantWorkWith = new ArrayList<>();
+		if(conflict1 != "" && !conflict1.isEmpty() && !conflict1.isBlank()){
+			this.addCantWorkWithStudent(conflict1);
+		}
+		if(conflict2 != "" && !conflict2.isEmpty() && !conflict2.isBlank()) {
+			this.addCantWorkWithStudent(conflict2);
+		}
+
+		// Other references - this will be set on time
+		this.currProjAssoc = "";
+		this.currTeamAssoc = null;
+	}
 	
 	// Student can specify 2 students he/she cant work with
 	public boolean addCantWorkWithStudent(String studentId) {
@@ -162,5 +197,20 @@ public class Student implements Serializable {
 	public void setCurrTeamAssoc(Team currTeamAssoc) {
 		this.currTeamAssoc = currTeamAssoc;
 	}
+
+	public int getSumGrades() {
+		return sumGrades;
+	}
+
+	public void setSumGrades(int sumGrades) {
+		this.sumGrades = sumGrades;
+	}
+
 	// Getters-Setters Ends Here
+
+	// [6] Clone method for deep cloning, since team contains student's reference
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 }

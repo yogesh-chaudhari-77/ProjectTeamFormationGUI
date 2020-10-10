@@ -21,6 +21,7 @@ public class DatabaseHelper {
 	}
 	
 	
+	// [8]
 	// Create Database Connection and return that
 	public Connection getDBConnection() {
 		
@@ -31,7 +32,6 @@ public class DatabaseHelper {
 			try {
 				connect = DriverManager.getConnection("jdbc:sqlite:C:/Users/Yogeshwar Chaudhari/IdeaProjects/ProjectTeamFormation/sqlite/projectTeamFormation.db");
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -49,7 +49,6 @@ public class DatabaseHelper {
 			stmt = connect.createStatement();
 			rs = stmt.executeQuery(queryStr);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}  
 		
@@ -65,7 +64,6 @@ public class DatabaseHelper {
 				this.connect = null;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

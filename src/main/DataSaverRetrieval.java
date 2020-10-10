@@ -1,8 +1,6 @@
-package main; /**
- * References :
- * [1] Releases · xerial/sqlite-jdbc
- * Releases · xerial/sqlite-jdbc (2020). Available at: https://github.com/xerial/sqlite-jdbc/releases (Accessed: 12 September 2020).
- */
+package main;
+
+
 
 import globals.Globals;
 import model.entities.*;
@@ -334,8 +332,12 @@ public class DataSaverRetrieval {
 		fileHandler.destroy();
 	}
 
-	
-	
+
+	/**
+	 * Reads the Student Info file to populate, student's grade, personality types, and conflicts
+	 * @param studentsList
+	 * @return
+	 */
 	public static HashMap<String, Student> readStudentInfoFile(HashMap<String, Student> studentsList) {
 
 		System.out.println("Read studentinfo file . . .");
@@ -352,7 +354,6 @@ public class DataSaverRetrieval {
 				StringTokenizer tokener = new StringTokenizer(studentRecord);
 				
 				String studentId = tokener.nextToken();
-				System.out.print(studentId+" ");
 				String personalityType = "";
 				Student studenRef = studentsList.get(studentId);
 
@@ -397,7 +398,11 @@ public class DataSaverRetrieval {
 	}
 
 
-	// Read student ore
+	/**
+	 * Reads student's project's preferences
+	 * @param studentsList
+	 * @return
+	 */
 	public static HashMap<String, Student> readStudentPreferencesFile(HashMap<String, Student> studentsList) {
 		
 		System.out.println("Reading student preferences file . . .");
@@ -512,8 +517,7 @@ public class DataSaverRetrieval {
 	 * Store teams list as a serialised content
 	 */
 	public static void writeTeamsFile(HashMap<String, Team> teamsList) {
-		
-		
+
 		try {
 			
 			fileHandler.setBinaryFile(Globals.TEAMS_TXT, "write");
@@ -928,7 +932,7 @@ public class DataSaverRetrieval {
 			while(rs.next()){
 
 				Team tempTeam = new Team();
-				HashMap <String, Student> members = new HashMap<String, Student>();
+				LinkedHashMap <String, Student> members = new LinkedHashMap<String, Student>();
 
 				// Set id and allocated project
 				tempTeam.setTeamId( rs.getString("id") );

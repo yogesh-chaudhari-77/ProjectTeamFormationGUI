@@ -23,6 +23,9 @@ import model.entities.Project;
 import model.entities.Student;
 import model.entities.Team;
 import model.exceptions.*;
+import utilities.CommandManager;
+import utilities.SuggesterEngine;
+import utilities.SwapedOp;
 
 import java.net.URL;
 import java.util.*;
@@ -30,12 +33,16 @@ import java.util.*;
 public class VisualSensitiveAnalysisController implements Initializable {
     @FXML
     public GridPane teamsGrid;
+
     @FXML
     public GridPane analysisChartsGrid;
+
     @FXML
     public TextField studentIdText;
+
     @FXML
     public Button addBtn;
+
     @FXML
     public Button swapBtn;
 
@@ -160,18 +167,38 @@ public class VisualSensitiveAnalysisController implements Initializable {
     // Reference to skill gap across team graph - (number of lines = number of teams formed)
     @FXML
     public BarChart skillGapStdDevGraph;
+
+    @FXML
     public TextFlow projectInfoTextFlow;
+
+    @FXML
     public TextFlow studentInfoTextFlow;
+
+    @FXML
     public MenuItem saveAndCloseBtn;
+
+    @FXML
     public Label statusbarLabel;
+
+    @FXML
     public ProgressBar statusbarProgress;
 
     @FXML
     public Label stdPrefLabel;
+
     @FXML
     public Label stdAvgProjCompLabel;
+
     @FXML
     public Label stdSkillShortFallLabel;
+
+    @FXML
+    public Button undoBtn;
+
+    @FXML
+    public Button suggestBtn;
+
+    
 
     // Holds the references of all top grid panes where teams are rendered. 5 Grids
     GridPane [] teamsGridColln = null;
@@ -183,6 +210,9 @@ public class VisualSensitiveAnalysisController implements Initializable {
     CheckBox [] cardCheckBoxes = null;
 
     ProjectTeamFormationMain pj = null;
+
+    // 06-10-2020 - Undo functionality
+    private CommandManager cmdManager = null;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -197,25 +227,24 @@ public class VisualSensitiveAnalysisController implements Initializable {
         pj.loadDataFromFiles();
 
         // Setting controller for updates
-        System.out.println("1");
         pj.setController(this);
 
-        System.out.println("2");
+        // 06-10-2020 - Gets the new command manager
+        cmdManager = CommandManager.getCommandTracker();
+
         // Render formed teams i.e. team id and team members
         renderTeams();
 
-        System.out.println("3");
         // Render graphs as per formed teams i.e. team id vs value
         renderGraphs();
 
-        System.out.println("4");
         /**
          * Renders all the project Ids that are being shortlisted as the popular projects
          */
         for(String projId : this.pj.getShortListedProjectsList().keySet()){
             this.shortListedProjectsListView.getItems().add(projId);
         }
-        System.out.println("5");
+
         /**
          * Renders all the teams that have been formed to the listview
          */
@@ -223,10 +252,8 @@ public class VisualSensitiveAnalysisController implements Initializable {
             this.teamsListView.getItems().add(teamId);
         }
 
-        System.out.println("6");
-
         populateStudentListView();
-        System.out.println("7");
+        statusbarLabel.setText("Initialised Successfully.");
     }
 
 
@@ -236,8 +263,9 @@ public class VisualSensitiveAnalysisController implements Initializable {
      */
      public void populateStudentListView(){
 
+         this.studentsListView.getItems().clear();
+
          for(Student s : this.pj.getStudentsList().values()){
-             //System.out.println("In Student View Populatation");
              System.out.println(s.getCurrProjAssoc());
 
              if(s.getCurrProjAssoc() == null || s.getCurrProjAssoc() == "" || s.getCurrProjAssoc().isEmpty() || s.getCurrProjAssoc().contentEquals("")){
@@ -300,15 +328,15 @@ public class VisualSensitiveAnalysisController implements Initializable {
     public void renderGraphs(){
         statusbarLabel.setText("Rendering Graphs");
 
-        // Rendering graphs
-        renderPreferencesGraph();
-        renderAvgCompetencyLevelGraph();
-        renderSkillGapGraph();
-
         // Calculating the Standard deviations real quick
         this.pj.sDInSkillCompetency();
         this.pj.sDInProjPrefAllocPrct();
         this.pj.sDInShortFallAcrossTeam();
+
+        // Rendering graphs
+        renderPreferencesGraph();
+        renderAvgCompetencyLevelGraph();
+        renderSkillGapGraph();
 
         stdPrefLabel.setText( "Pref Alloc Std Dev : : "+ String.format("%.2f", Double.isNaN(pj.getsDInProjPrefAllocPrct()) ? 0.0 : pj.getsDInProjPrefAllocPrct()) );
         stdAvgProjCompLabel.setText( "Skill Comp. Std Dev : "+ String.format("%.2f", Double.isNaN(pj.getsDInSkillCompetencyAcrossProj()) ? 0.0 : pj.getsDInSkillCompetencyAcrossProj() )  );
@@ -316,61 +344,67 @@ public class VisualSensitiveAnalysisController implements Initializable {
     }
 
     /**
+     * [7]
      * Graph showing percentage distribution of student's who received their first and second preference.
      * This is in terms of standard deviation
      */
     public void renderPreferencesGraph(){
 
+        statusbarLabel.setText("Rendering Preferences Graph");
         prefAllocStdDevGraph.getData().clear();
 
         prefAllocStdDevGraph.setTitle("Preference Allocation");
         final CategoryAxis xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
 
-        XYChart.Series series1 = new XYChart.Series();
+        XYChart.Series teamsVsPrefSeries = new XYChart.Series();
         this.pj.getTeamsList().values().stream().forEach((team) -> {
-            series1.getData().add(new XYChart.Data(team.getTeamId(), team.getPrctStudentReceivedPreference()));
+            teamsVsPrefSeries.getData().add(new XYChart.Data(team.getTeamId(), team.getPrctStudentReceivedPreference()));
         });
-        prefAllocStdDevGraph.getData().add(series1);
+        prefAllocStdDevGraph.getData().add(teamsVsPrefSeries);
     }
 
     /**
      * Graph showing percentage distribution of average competency level
      * This is in terms of standard deviation
+     * References : [7]
      */
     public void renderAvgCompetencyLevelGraph(){
+
+        statusbarLabel.setText("Rendering Average Competancy Graph");
         avgSkillComptStdDevGraph.getData().clear();
 
         avgSkillComptStdDevGraph.setTitle("Average Competency Level");
         final CategoryAxis xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
 
-        XYChart.Series series1 = new XYChart.Series();
+        XYChart.Series teamVsCompSeries = new XYChart.Series();
         this.pj.getTeamsList().values().stream().forEach((team) -> {
-            series1.getData().add(new XYChart.Data(team.getTeamId(), team.getAvgProjSkillComp()));
+            teamVsCompSeries.getData().add(new XYChart.Data(team.getTeamId(), team.getAvgProjSkillComp()));
         });
-        avgSkillComptStdDevGraph.getData().add(series1);
+        avgSkillComptStdDevGraph.getData().add(teamVsCompSeries);
         
     }
 
     /**
      * Graph showing skills gap
      * This is in terms of standard deviation
-     * Reference : [1]
+     * Reference : [7]
      */
     public void renderSkillGapGraph(){
 
+        statusbarLabel.setText("Rendering Skill Short Graph");
         skillGapStdDevGraph.getData().clear();
 
         skillGapStdDevGraph.setTitle("Skill Gap");
         final CategoryAxis xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
 
-        XYChart.Series series1 = new XYChart.Series();
+        XYChart.Series teamVsSkillSeries = new XYChart.Series();
         this.pj.getTeamsList().values().stream().forEach((team) -> {
-            series1.getData().add(new XYChart.Data(team.getTeamId(), team.getTotalSkillShortage()));
+            teamVsSkillSeries.getData().add(new XYChart.Data(team.getTeamId(), team.getTotalSkillShortage()));
         });
-        skillGapStdDevGraph.getData().add(series1);
+        skillGapStdDevGraph.getData().add(teamVsSkillSeries);
     }
 
 
@@ -380,7 +414,7 @@ public class VisualSensitiveAnalysisController implements Initializable {
      * Student is then added to selected project id.
      * @param actionEvent
      */
-    public void addStudentEvent(ActionEvent actionEvent) {
+    public void addStudentEvent(ActionEvent actionEvent) throws CloneNotSupportedException {
 
         // Basic error handling - Project must be selected before adding a member to team
         String currProjectId = "";
@@ -408,6 +442,7 @@ public class VisualSensitiveAnalysisController implements Initializable {
 
             Team teamRef = this.pj.getTeamsList().get(teamId);
 
+            // If cant find team, create a new empty team
             if(teamRef == null){
                 teamRef = new Team(teamId, projRef);
                 this.pj.getTeamsList().put(teamId, teamRef);
@@ -417,6 +452,10 @@ public class VisualSensitiveAnalysisController implements Initializable {
             if(teamRef != null){
                 try {
                     teamRef.addMember(projRef, studentRef);
+
+                    // Adding this cloned team reference onto the stack
+                    this.cmdManager.execute(teamRef);
+
                 } catch (InvalidMemberException | RepeatedMemberException | StudentConflictException | ExcessMemberException e) {
                     showAlert(Alert.AlertType.ERROR, e.getClass().getName(), e.getMessage()+" Your last addition will be reverted.");
                 } catch (NoLeaderException e) {
@@ -487,14 +526,16 @@ public class VisualSensitiveAnalysisController implements Initializable {
 
             // Remove those students from the current team
             Team team1Ref = s1Ref.getCurrTeamAssoc();
-            team1Ref.removeMember(null, s1Ref);
+            team1Ref.removeMember(team1Ref.getProjectRef(), s1Ref);
 
             Team team2Ref = s2Ref.getCurrTeamAssoc();
-            team2Ref.removeMember(null, s2Ref);
+            team2Ref.removeMember(team2Ref.getProjectRef(), s2Ref);
 
             try {
                 team1Ref.addMember( team1Ref.getProjectRef(), s2Ref );
                 team2Ref.addMember( team2Ref.getProjectRef(), s1Ref );
+
+                this.cmdManager.execute(new SwapedOp(team1Ref, s1Id, team2Ref, s2Id));
 
             } catch (InvalidMemberException | RepeatedMemberException | StudentConflictException | ExcessMemberException | NoLeaderException | PersonalityImbalanceException e) {
                 e.printStackTrace();
@@ -502,6 +543,8 @@ public class VisualSensitiveAnalysisController implements Initializable {
                 // Rectifying the swap if something goes wrong
                 try {
                     team1Ref.removeMember(team1Ref.getProjectRef(), s2Ref);
+                    team2Ref.removeMember( team2Ref.getProjectRef(), s1Ref );
+
                     team1Ref.addMember(team1Ref.getProjectRef(), s1Ref);
                     team2Ref.addMember(team2Ref.getProjectRef(), s2Ref);
                 } catch (InvalidMemberException | RepeatedMemberException | StudentConflictException | ExcessMemberException | NoLeaderException | PersonalityImbalanceException e1) {
@@ -520,6 +563,55 @@ public class VisualSensitiveAnalysisController implements Initializable {
         // Render graphs and teams again
         renderGraphs();
         renderTeams();
+        callSuggester(false);
+    }
+
+    /**
+     * Shows possible suggestions for the formed team - Triggered from GUI
+     * @param mouseEvent
+     */
+    public void showSugestions(MouseEvent mouseEvent) {
+        this.callSuggester(true);
+    }
+
+    /**
+     * Starts the suggester thread
+     */
+    public void callSuggester(boolean alertDisplay){
+
+        // Cloning all presently formed teams, and putting that into clonedTeams
+        HashMap<String, Team> clonedTeams = new HashMap<>();
+
+        for(Team t : this.pj.getTeamsList().values()){
+            try {
+                clonedTeams.put(t.getTeamId(), (Team)t.clone());
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Start Thread
+        try{
+            SuggesterEngine suggester = new SuggesterEngine(clonedTeams);
+            Thread suggestionThread = new Thread(suggester);
+            suggestionThread.start();
+            suggestionThread.join();
+
+            String suggestionStr = "";
+            for(String suggestions : suggester.getSuggestions()){
+                suggestionStr += suggestions+"\n";
+            }
+
+            if(alertDisplay){
+                showAlert(Alert.AlertType.INFORMATION, "Suggestions", suggestionStr);
+            }else{
+                System.out.println(suggestionStr);
+            }
+
+        }catch (Exception e){
+            System.out.println("Suggest caused some problem");
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -558,17 +650,13 @@ public class VisualSensitiveAnalysisController implements Initializable {
          for(int i = 0; i < this.cardProjeIdColln.length; i++){
 
              if(this.cardProjeIdColln[i].getText().contentEquals(currProjectId)){
-                 // Update status bar
-                 //System.out.println("The project already has a card");
                  return;
              }
          }
 
         // Assign this current selection a new card. Either empty or last available
         for(int i = 0; i < this.cardProjeIdColln.length; i++){
-            System.out.println("I am in for");
             if(this.cardProjeIdColln[i].getText().contentEquals("") || this.cardProjeIdColln[i].getText().isBlank() || this.cardProjeIdColln[i].getText().isEmpty()){
-                //System.out.println("I am in If");
                 this.cardProjeIdColln[i].setText(currProjectId);
                 return;
             }
@@ -658,6 +746,10 @@ public class VisualSensitiveAnalysisController implements Initializable {
     }
 
 
+    /**
+     * When user selects any project from shortlisted project list, it would pull all its details and paints into textFlow
+     * @param pro : Project references, the selected one
+     */
     public void paintProjectInfo(Project pro){
 
         // Remove all existing datainside textflow
@@ -678,7 +770,7 @@ public class VisualSensitiveAnalysisController implements Initializable {
     }
 
     /**
-     * Removing students from the list
+     * Removing students from the team
      * @param mouseEvent
      */
     public void removeStudentClicked(MouseEvent mouseEvent) {
@@ -736,4 +828,21 @@ public class VisualSensitiveAnalysisController implements Initializable {
         this.pj.saveDataToDatabase();
         System.exit(0);
     }
+
+
+    /**
+     * Performs the undo action
+     * @param mouseEvent
+     */
+    public void undoAction(MouseEvent mouseEvent) {
+
+        this.cmdManager.undo();
+
+        this.populateStudentListView();
+
+        this.renderTeams();
+
+        this.renderGraphs();
+    }
+
 }
