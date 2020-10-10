@@ -566,6 +566,13 @@ public class VisualSensitiveAnalysisController implements Initializable {
         callSuggester(false);
     }
 
+    /**
+     * Shows possible suggestions for the formed team - Triggered from GUI
+     * @param mouseEvent
+     */
+    public void showSugestions(MouseEvent mouseEvent) {
+        this.callSuggester(true);
+    }
 
     /**
      * Starts the suggester thread
@@ -838,11 +845,4 @@ public class VisualSensitiveAnalysisController implements Initializable {
         this.renderGraphs();
     }
 
-    /**
-     * Shows possible suggestions for the formed team
-     * @param mouseEvent
-     */
-    public void showSugestions(MouseEvent mouseEvent) {
-        this.callSuggester(true);
-    }
 }

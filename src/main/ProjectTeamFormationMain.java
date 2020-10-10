@@ -21,7 +21,7 @@ public class ProjectTeamFormationMain {
 	private ScannerUtil scannerUtil = ScannerUtil.createInstance().consoleReader();
 	private FileHandlingHelper fileHandler = FileHandlingHelper.init();
 
-	// ArrayLists that maintains each such entities
+	// Hashmaps that maintains each such entities
 	private HashMap<String, Company> companiesList;
 	private HashMap<String, ProjectOwner> projectOwnersList;
 	private HashMap<String, Project> projectsList;

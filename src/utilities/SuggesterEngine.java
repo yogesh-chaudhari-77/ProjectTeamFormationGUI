@@ -85,6 +85,17 @@ public class SuggesterEngine extends Thread{
     }
 
 
+
+    public void strategyDecision(){
+
+        // Purposely kept here. to be able to change the strategy
+        if(currentStrategy == "skillcomp"){
+            this.teamsCopy.sort(Comparator.comparing( (t) -> t.getAvgProjSkillComp()));
+        }else if(currentStrategy == "skillshortfall"){
+            this.teamsCopy.sort(Comparator.comparing( (t) -> t.getTotalSkillShortage()));
+        }
+    }
+
     /**
      * Actual implementation that makes the suggestions
      */
@@ -150,6 +161,8 @@ public class SuggesterEngine extends Thread{
                 team1.updateStatistics();
                 team2.updateStatistics();
 
+                this.storeCurrValues();
+
                 // One possible Suggestion
                 suggestions.add(s1.getId() + " swap with "+s2.getId());
 
@@ -171,8 +184,6 @@ public class SuggesterEngine extends Thread{
                     System.out.println("This line should never be printed");
                 }
             }
-
-            this.storeCurrValues();
 
             // If reached at the middle, change the strategy
             if( i > this.teamsCopy.size()/2){
@@ -203,16 +214,6 @@ public class SuggesterEngine extends Thread{
 
     }
 
-
-    public void strategyDecision(){
-
-        // Purposely kept here. to be able to change the strategy
-        if(currentStrategy == "skillcomp"){
-            this.teamsCopy.sort(Comparator.comparing( (t) -> t.getAvgProjSkillComp()));
-        }else if(currentStrategy == "skillshortfall"){
-            this.teamsCopy.sort(Comparator.comparing( (t) -> t.getTotalSkillShortage()));
-        }
-    }
 
     // Getter Setters Starts Here
 

@@ -53,7 +53,7 @@ public class TestProjectTeamFormationMain {
 	public void test_sDInSkillCompetency() {
 		
 		projectTeamFormationMain.sDInSkillCompetency();
-		Assert.assertEquals("Standard Daviation in Skill Competency", 0.070, projectTeamFormationMain.getsDInSkillCompetencyAcrossProj(), 0.001);
+		Assert.assertEquals("Standard Daviation in Skill Competency", 0.671, projectTeamFormationMain.getsDInSkillCompetencyAcrossProj(), 0.001);
 	}
 	
 	
@@ -65,7 +65,7 @@ public class TestProjectTeamFormationMain {
 	public void test_sDInProjPrefAllocPrct() {
 		
 		projectTeamFormationMain.sDInProjPrefAllocPrct();
-		Assert.assertEquals("Project Preference Allocation SD : ", 24.49, projectTeamFormationMain.getsDInProjPrefAllocPrct(), 0.01);
+		Assert.assertEquals("Project Preference Allocation SD : ", 22.360, projectTeamFormationMain.getsDInProjPrefAllocPrct(), 0.01);
 	}
 
 	/*
@@ -75,7 +75,7 @@ public class TestProjectTeamFormationMain {
 	public void sDInShortFallAcrossTeam() {
 		
 		projectTeamFormationMain.sDInShortFallAcrossTeam();
-		Assert.assertEquals("Standard Daviation in Skill Shortfall across Teams", 0.58, projectTeamFormationMain.getsDInSkillShortfall(), 0.01);
+		Assert.assertEquals("Standard Daviation in Skill Shortfall across Teams", 1.065, projectTeamFormationMain.getsDInSkillShortfall(), 0.01);
 		
 	}
 
