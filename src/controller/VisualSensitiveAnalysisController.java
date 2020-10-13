@@ -3,6 +3,8 @@ package controller;
 /*
 [1] Using JavaFX Charts: Bar Chart | JavaFX 2 Tutorials and Documentation
 Using JavaFX Charts: Bar Chart | JavaFX 2 Tutorials and Documentation (2020). Available at: https://docs.oracle.com/javafx/2/charts/bar-chart.htm (Accessed: 9 September 2020).
+
+Please refere References File under src/References.txt
  */
 
 import javafx.event.ActionEvent;

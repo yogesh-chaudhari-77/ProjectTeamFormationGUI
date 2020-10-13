@@ -13,6 +13,8 @@ import java.util.Scanner;
  *  @author Yogeshwar Chaudhari
  *  This is my original work and has been submitted earlier as part of every Programming Fundamental Assignment in Sem 1 - RMIT
  *  The code is aslo being reused in Software Engineering Fundamentals group assignment.
+ *
+ *  Please refer References File under src/References.txt
  */
 
 public class ScannerUtil {

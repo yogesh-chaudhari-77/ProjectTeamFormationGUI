@@ -7,7 +7,6 @@ import model.entities.Team;
 import model.exceptions.*;
 import org.junit.*;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -23,9 +22,6 @@ import java.util.LinkedHashMap;
  */
 public class TestTeam {
 
-
-	// https://stackoverflow.com/questions/6415728/junit-testing-with-simulated-user-input
-	InputStream sysInputBk = null;
 	ProjectTeamFormationMain pjT = null;
 
 	private LinkedHashMap<String, Project> shortListedProjectsList = new LinkedHashMap<>();
