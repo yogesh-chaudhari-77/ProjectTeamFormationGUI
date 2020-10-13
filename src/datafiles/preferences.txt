@@ -1,23 +1,23 @@
 s1
-Pr3 3 Pr2 2 Pr4 4 Pr1 1 
+Pr3 3 Pr2 2 Pr8 1 Pr1 4 
 
 s10
-Pr5 3 Pr4 2 Pr7 1 Pr6 4 
+Pr5 3 Pr4 2 Pr6 4 Pr8 1 
 
 s11
-Pr5 4 Pr4 3 Pr7 2 Pr6 1 
+Pr5 3 Pr6 1 Pr8 2 Pr1 4 
 
 s12
-Pr5 1 Pr4 4 Pr7 3 Pr6 2 
+Pr5 1 Pr4 4 Pr6 2 Pr8 3 
 
 s13
-Pr5 3 Pr4 4 Pr7 1 Pr6 2 
+Pr5 3 Pr4 4 Pr6 2 Pr10 1 
 
 s14
-Pr5 2 Pr4 3 Pr7 4 Pr6 1 
+Pr5 2 Pr4 3 Pr6 1 Pr8 4 
 
 s15
-Pr5 1 Pr4 2 Pr7 3 Pr6 4 
+Pr5 1 Pr4 2 Pr6 4 Pr1 3 
 
 s16
 Pr5 4 Pr4 1 Pr7 2 Pr6 3 
