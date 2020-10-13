@@ -42,10 +42,6 @@ public class OpStack<T> {
             return null;
     }
 
-    /**
-     * Returns the current size of the stack
-     * @return
-     */
     public int size()
     {
         return operations.size();

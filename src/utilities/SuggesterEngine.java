@@ -78,7 +78,7 @@ public class SuggesterEngine extends Thread{
         this.currStdSkillComp = this.sDInSkillCompetency();
         this.currStdPref = this.sDInProjPrefAllocPrct();
         this.currStdSkillShortfall = this.sDInShortFallAcrossTeam();
-        sumCurrStds = prevStdSkillComp + prevStdPref + prevStdSkillShortfall;
+        sumCurrStds = currStdSkillComp + currStdPref + currStdSkillShortfall;
     }
 
     /**
