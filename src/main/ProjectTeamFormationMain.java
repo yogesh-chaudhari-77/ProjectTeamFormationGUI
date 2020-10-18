@@ -194,7 +194,16 @@ public class ProjectTeamFormationMain {
 
 		ProjectOwner tempProjectOwner = null;
 
-		String id = scannerUtil.readString("Project Owner ID : ");
+		String id = "";
+		do{
+			id = scannerUtil.readString("Project Owner ID : ");
+			if(this.projectsList.get(id.trim()) != null){
+				System.err.println(id+" is unavailable. Please try something different.");
+				continue;
+			}
+			break;
+		}while(true);
+
 		String firstName = scannerUtil.readString("First Name : ");
 		String surname = scannerUtil.readString("Surname : ");
 		String role = scannerUtil.readString("Role : ");
@@ -223,8 +232,16 @@ public class ProjectTeamFormationMain {
 	public Project addProject() {
 
 		Project tempProj = null;
+		String id = "";
+		do{
+			id = scannerUtil.readString("Project ID : ");
+			if(this.projectsList.get(id.trim()) != null){
+				System.err.println(id+" is unavailable. Please try something different.");
+				continue;
+			}
+			break;
+		}while(true);
 
-		String id = scannerUtil.readString("Project ID : ");
 		String title = scannerUtil.readString("Title : ");
 		String description = scannerUtil.readString("Description : ");
 
@@ -261,20 +278,20 @@ public class ProjectTeamFormationMain {
 		HashMap<String, Integer> soughtSkills = new HashMap<String, Integer>();
 		boolean accepted = false;
 		do {
-			int pRank = scannerUtil.readInt("Programming & Software Engineering");
+			int pRank = scannerUtil.readInt("Programming & Software Engineering : ", 1, 4);
 			soughtSkills.put(Globals.PROG_SOFT_ENGG, pRank);
 
-			int nRank = scannerUtil.readInt("Networking and Security");
+			int nRank = scannerUtil.readInt("Networking and Security : ", 1, 4);
 			soughtSkills.put(Globals.NETWORK_SECURITY, nRank);
 
-			int aRank = scannerUtil.readInt("Analytics and Big Data");
+			int aRank = scannerUtil.readInt("Analytics and Big Data : ", 1, 4);
 			soughtSkills.put(Globals.ANALYTICS_BIG_DATA, aRank);
 
-			int wRank = scannerUtil.readInt("Web & Mobile Applications");
+			int wRank = scannerUtil.readInt("Web & Mobile Applications : ", 1, 4);
 			soughtSkills.put(Globals.WEB_MOBILE_APP, wRank);
 
 			// Shortest way of checking if all elements are uniue or not -
-			// https://www.geeksforgeeks.org/check-if-all-array-elements-are-distinct/
+			// [10] https://www.geeksforgeeks.org/check-if-all-array-elements-are-distinct/
 			Set<Integer> preference = new HashSet<Integer>(soughtSkills.values());
 
 			// same size means all elements are unique

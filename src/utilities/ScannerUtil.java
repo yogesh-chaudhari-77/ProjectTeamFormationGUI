@@ -78,6 +78,36 @@ public class ScannerUtil {
 		
 		return readVal;
 	}
+
+	/*
+	 * Reads integer data until integer data is not supplied
+	 * Re-prints original instruction message on failure
+	 */
+
+	public int readInt(String inputStr, int min, int max) {
+
+		boolean success = false;
+		int readVal = 0;
+
+		do {
+			try {
+				System.out.print(inputStr);
+				readVal = ScannerUtil.scannerInstance.consoleIn.nextInt();
+				if (readVal < min || readVal > max) {
+					System.err.println("value must be in between ["+min+", "+max+"]");
+					continue;
+				}
+				success = true;
+			} catch (InputMismatchException | IllegalArgumentException ime) {
+				System.err.println("Please enter numeric value.");
+			}
+
+			ScannerUtil.consoleReader().clearReader();
+		}while(!success);
+
+
+		return readVal;
+	}
 	
 	// Reads double data and does not accept wrong data
 	public double readDouble(String inputInstr) {
