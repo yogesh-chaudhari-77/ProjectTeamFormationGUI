@@ -89,6 +89,8 @@ public class Team implements Serializable, Cloneable, Action {
 			sRef.setCurrProjAssoc(projRef.getId());
 			sRef.setCurrTeamAssoc(this);
 		}
+
+		this.updateStatistics();
 	}
 	
 	

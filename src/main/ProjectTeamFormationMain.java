@@ -6,6 +6,7 @@ import model.entities.*;
 import model.exceptions.*;
 import utilities.FileHandlingHelper;
 import utilities.ScannerUtil;
+import utilities.Validator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -178,7 +179,23 @@ public class ProjectTeamFormationMain {
 	public Company addCompany() {
 		Company tempComp = null;
 
-		String id = scannerUtil.readString("Company ID : ");
+		String id = "";
+		do{
+			id = scannerUtil.readString("Company ID : ").toLowerCase();
+
+			if(this.companiesList.get(id) != null){
+				System.err.println(id+" Already taken");
+				continue;
+			}
+
+			if(! Validator.companyId(id) ){
+				continue;
+			}
+
+			break;
+
+		}while(true);
+
 		String companyName = scannerUtil.readString(Globals.COMP_NAME_PATT_IDENT, "Name : ", "");
 		String companyABN = scannerUtil.readString(Globals.ABN_PATT_IDENT, "ABN : ", "");
 		String companyURL = scannerUtil.readString(Globals.URL_PATT_IDENT, "URL : ", "");
@@ -196,18 +213,24 @@ public class ProjectTeamFormationMain {
 
 		String id = "";
 		do{
-			id = scannerUtil.readString("Project Owner ID : ");
-			if(this.projectsList.get(id.trim()) != null){
+			id = scannerUtil.readString("Project Owner ID : ").trim();
+
+			if(this.projectOwnersList.get(id.trim()) != null){
 				System.err.println(id+" is unavailable. Please try something different.");
 				continue;
 			}
+
+			if(! Validator.projectOwnerId(id)){
+				continue;
+			}
+
 			break;
 		}while(true);
 
-		String firstName = scannerUtil.readString("First Name : ");
-		String surname = scannerUtil.readString("Surname : ");
-		String role = scannerUtil.readString("Role : ");
-		String email = scannerUtil.readString("Email : ");
+		String firstName = scannerUtil.readString(Globals.COMP_NAME_PATT_IDENT, "First Name : ", "Invaid Input.");
+		String surname = scannerUtil.readString(Globals.COMP_NAME_PATT_IDENT, "Surname : ", "Invalid Surname");
+		String role = scannerUtil.readString(Globals.COMP_NAME_PATT_IDENT, "Role : ", "Invalid Role");
+		String email = scannerUtil.readString(Globals.EMAIL_PATT_IDENT, "Email : ", "Invalid Email");
 
 		// Print the list of all available companies
 		System.out.println(companiesList.keySet());
@@ -235,14 +258,21 @@ public class ProjectTeamFormationMain {
 		String id = "";
 		do{
 			id = scannerUtil.readString("Project ID : ");
+
 			if(this.projectsList.get(id.trim()) != null){
 				System.err.println(id+" is unavailable. Please try something different.");
 				continue;
 			}
+
+			if(! Validator.projectId(id) ){
+				continue;
+			}
+
 			break;
+
 		}while(true);
 
-		String title = scannerUtil.readString("Title : ");
+		String title = scannerUtil.readString(Globals.COMP_NAME_PATT_IDENT,"Title : ", "Invalid Title");
 		String description = scannerUtil.readString("Description : ");
 
 		// Show exisiting projects
