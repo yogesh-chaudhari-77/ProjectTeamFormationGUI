@@ -10,6 +10,12 @@ Opportunity to experience software development of large scale system on cloud pl
 Own10
 W 4 P 2 N 1 A 3
 
+Test Project
+Pr100
+Tes
+Own7
+W 4 P 1 N 2 A 3
+
 App Developement
 Pr2
 An cross-platform app will be developed by team of 4 using either Angular or react native
@@ -40,17 +46,29 @@ No Description Available
 Own6
 W 3 P 4 N 2 A 1
 
-Product Design
+Payment Gateway Product Design
 Pr7
-No Description Available
+No Description Available. Please contact administrator.
 Own7
 W 3 P 4 N 2 A 1
+
+Nikhil Project
+Pr77
+Sample Description
+Own2
+W 1 P 4 N 3 A 2
 
 AWS Developer
 Pr8
 Opportunity to experience software development of large scale system on AWS platform.
 Own8
 W 1 P 2 N 4 A 3
+
+H
+Pr88
+H
+Own1
+W 31 P 70 N 1 A 313
 
 Automation Testing
 Pr9

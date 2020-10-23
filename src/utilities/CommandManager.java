@@ -1,5 +1,8 @@
 package utilities;
 
+import utilities.undoredo.Action;
+import utilities.undoredo.OpStack;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,22 +56,19 @@ public class CommandManager {
         {   a = stackNormal.pop();
             a.undo();
             stackReverse.push(a);
-            actionHistory.add("Something - undo");
+            actionHistory.add("Something - undone");
         }
     }
 
-    /**
-     * Clear normal operation stack
-     */
-    public void clearNormal() {
-        stackNormal.clear();
-    }
-
-    /**
-     * Clears reverse operation stack
-     */
-    public void clearReverse() {
-        stackReverse.clear();
+    // Action can been redone. Picks from the reverse operation stack
+    public void redo(){
+        Action a;
+        if(stackReverse.size() > 0){
+            a = stackReverse.pop();
+            a.redo();
+            stackNormal.push(a);
+            actionHistory.add("Something - redone");
+        }
     }
 
     /**
@@ -78,4 +78,28 @@ public class CommandManager {
     List<String> getActionHistory() {
         return actionHistory;
     }
+
+
+    // Getter Setter Starts Here
+    public OpStack<Action> getStackNormal() {
+        return stackNormal;
+    }
+
+    public void setStackNormal(OpStack<Action> stackNormal) {
+        this.stackNormal = stackNormal;
+    }
+
+    public OpStack<Action> getStackReverse() {
+        return stackReverse;
+    }
+
+    public void setStackReverse(OpStack<Action> stackReverse) {
+        this.stackReverse = stackReverse;
+    }
+
+    public void setActionHistory(List<String> actionHistory) {
+        this.actionHistory = actionHistory;
+    }
+
+    // Getter Setter Ends Here
 }

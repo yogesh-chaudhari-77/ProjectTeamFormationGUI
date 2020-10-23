@@ -3,6 +3,8 @@ package controller;
 /*
 [1] Using JavaFX Charts: Bar Chart | JavaFX 2 Tutorials and Documentation
 Using JavaFX Charts: Bar Chart | JavaFX 2 Tutorials and Documentation (2020). Available at: https://docs.oracle.com/javafx/2/charts/bar-chart.htm (Accessed: 9 September 2020).
+
+Please refere References File under src/References.txt
  */
 
 import javafx.event.ActionEvent;
@@ -25,7 +27,7 @@ import model.entities.Team;
 import model.exceptions.*;
 import utilities.CommandManager;
 import utilities.SuggesterEngine;
-import utilities.SwapedOp;
+import utilities.undoredo.SwapedOp;
 
 import java.net.URL;
 import java.util.*;
@@ -536,6 +538,7 @@ public class VisualSensitiveAnalysisController implements Initializable {
                 team2Ref.addMember( team2Ref.getProjectRef(), s1Ref );
 
                 this.cmdManager.execute(new SwapedOp(team1Ref, s1Id, team2Ref, s2Id));
+                ( (Button) rootAnchorPane.lookup("#undoBtn")).setText( "Undo ("+this.cmdManager.getStackNormal().size()+")" );
 
             } catch (InvalidMemberException | RepeatedMemberException | StudentConflictException | ExcessMemberException | NoLeaderException | PersonalityImbalanceException e) {
                 e.printStackTrace();
@@ -834,9 +837,32 @@ public class VisualSensitiveAnalysisController implements Initializable {
      * Performs the undo action
      * @param mouseEvent
      */
+    @FXML
     public void undoAction(MouseEvent mouseEvent) {
 
         this.cmdManager.undo();
+
+        ( (Button) rootAnchorPane.lookup("#undoBtn")).setText( "Undo ("+this.cmdManager.getStackNormal().size()+")" );
+        ( (Button) rootAnchorPane.lookup("#redoBtn")).setText( "Redo ("+this.cmdManager.getStackReverse().size()+")" );
+
+        this.populateStudentListView();
+
+        this.renderTeams();
+
+        this.renderGraphs();
+    }
+
+    /**
+     * Performs redo action
+     * @param mouseEvent
+     */
+    @FXML
+    public void redoAction(MouseEvent mouseEvent) {
+
+        this.cmdManager.redo();
+
+        ( (Button) rootAnchorPane.lookup("#redoBtn")).setText( "Redo ("+this.cmdManager.getStackReverse().size()+")" );
+        ( (Button) rootAnchorPane.lookup("#undoBtn")).setText( "Undo ("+this.cmdManager.getStackNormal().size()+")" );
 
         this.populateStudentListView();
 

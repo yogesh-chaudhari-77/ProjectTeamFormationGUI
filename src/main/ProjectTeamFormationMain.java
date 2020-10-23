@@ -6,11 +6,13 @@ import model.entities.*;
 import model.exceptions.*;
 import utilities.FileHandlingHelper;
 import utilities.ScannerUtil;
+import utilities.Validator;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 /*
+ * Please refere References File under src/References.txt
  * Main class implementing method calling
  */
 
@@ -177,7 +179,23 @@ public class ProjectTeamFormationMain {
 	public Company addCompany() {
 		Company tempComp = null;
 
-		String id = scannerUtil.readString("Company ID : ");
+		String id = "";
+		do{
+			id = scannerUtil.readString("Company ID : ").toLowerCase();
+
+			if(this.companiesList.get(id) != null){
+				System.err.println(id+" Already taken");
+				continue;
+			}
+
+			if(! Validator.companyId(id) ){
+				continue;
+			}
+
+			break;
+
+		}while(true);
+
 		String companyName = scannerUtil.readString(Globals.COMP_NAME_PATT_IDENT, "Name : ", "");
 		String companyABN = scannerUtil.readString(Globals.ABN_PATT_IDENT, "ABN : ", "");
 		String companyURL = scannerUtil.readString(Globals.URL_PATT_IDENT, "URL : ", "");
@@ -193,11 +211,26 @@ public class ProjectTeamFormationMain {
 
 		ProjectOwner tempProjectOwner = null;
 
-		String id = scannerUtil.readString("Project Owner ID : ");
-		String firstName = scannerUtil.readString("First Name : ");
-		String surname = scannerUtil.readString("Surname : ");
-		String role = scannerUtil.readString("Role : ");
-		String email = scannerUtil.readString("Email : ");
+		String id = "";
+		do{
+			id = scannerUtil.readString("Project Owner ID : ").trim();
+
+			if(this.projectOwnersList.get(id.trim()) != null){
+				System.err.println(id+" is unavailable. Please try something different.");
+				continue;
+			}
+
+			if(! Validator.projectOwnerId(id)){
+				continue;
+			}
+
+			break;
+		}while(true);
+
+		String firstName = scannerUtil.readString(Globals.COMP_NAME_PATT_IDENT, "First Name : ", "Invaid Input.");
+		String surname = scannerUtil.readString(Globals.COMP_NAME_PATT_IDENT, "Surname : ", "Invalid Surname");
+		String role = scannerUtil.readString(Globals.COMP_NAME_PATT_IDENT, "Role : ", "Invalid Role");
+		String email = scannerUtil.readString(Globals.EMAIL_PATT_IDENT, "Email : ", "Invalid Email");
 
 		// Print the list of all available companies
 		System.out.println(companiesList.keySet());
@@ -222,9 +255,24 @@ public class ProjectTeamFormationMain {
 	public Project addProject() {
 
 		Project tempProj = null;
+		String id = "";
+		do{
+			id = scannerUtil.readString("Project ID : ");
 
-		String id = scannerUtil.readString("Project ID : ");
-		String title = scannerUtil.readString("Title : ");
+			if(this.projectsList.get(id.trim()) != null){
+				System.err.println(id+" is unavailable. Please try something different.");
+				continue;
+			}
+
+			if(! Validator.projectId(id) ){
+				continue;
+			}
+
+			break;
+
+		}while(true);
+
+		String title = scannerUtil.readString(Globals.COMP_NAME_PATT_IDENT,"Title : ", "Invalid Title");
 		String description = scannerUtil.readString("Description : ");
 
 		// Show exisiting projects
@@ -260,20 +308,20 @@ public class ProjectTeamFormationMain {
 		HashMap<String, Integer> soughtSkills = new HashMap<String, Integer>();
 		boolean accepted = false;
 		do {
-			int pRank = scannerUtil.readInt("Programming & Software Engineering");
+			int pRank = scannerUtil.readInt("Programming & Software Engineering : ", 1, 4);
 			soughtSkills.put(Globals.PROG_SOFT_ENGG, pRank);
 
-			int nRank = scannerUtil.readInt("Networking and Security");
+			int nRank = scannerUtil.readInt("Networking and Security : ", 1, 4);
 			soughtSkills.put(Globals.NETWORK_SECURITY, nRank);
 
-			int aRank = scannerUtil.readInt("Analytics and Big Data");
+			int aRank = scannerUtil.readInt("Analytics and Big Data : ", 1, 4);
 			soughtSkills.put(Globals.ANALYTICS_BIG_DATA, aRank);
 
-			int wRank = scannerUtil.readInt("Web & Mobile Applications");
+			int wRank = scannerUtil.readInt("Web & Mobile Applications : ", 1, 4);
 			soughtSkills.put(Globals.WEB_MOBILE_APP, wRank);
 
 			// Shortest way of checking if all elements are uniue or not -
-			// https://www.geeksforgeeks.org/check-if-all-array-elements-are-distinct/
+			// [10] https://www.geeksforgeeks.org/check-if-all-array-elements-are-distinct/
 			Set<Integer> preference = new HashSet<Integer>(soughtSkills.values());
 
 			// same size means all elements are unique

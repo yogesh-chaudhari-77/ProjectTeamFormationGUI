@@ -13,6 +13,8 @@ import java.util.Scanner;
  *  @author Yogeshwar Chaudhari
  *  This is my original work and has been submitted earlier as part of every Programming Fundamental Assignment in Sem 1 - RMIT
  *  The code is aslo being reused in Software Engineering Fundamentals group assignment.
+ *
+ *  Please refer References File under src/References.txt
  */
 
 public class ScannerUtil {
@@ -74,6 +76,36 @@ public class ScannerUtil {
 		}while(!success);
 		
 		
+		return readVal;
+	}
+
+	/*
+	 * Reads integer data until integer data is not supplied
+	 * Re-prints original instruction message on failure
+	 */
+
+	public int readInt(String inputStr, int min, int max) {
+
+		boolean success = false;
+		int readVal = 0;
+
+		do {
+			try {
+				System.out.print(inputStr);
+				readVal = ScannerUtil.scannerInstance.consoleIn.nextInt();
+				if (readVal < min || readVal > max) {
+					System.err.println("value must be in between ["+min+", "+max+"]");
+					continue;
+				}
+				success = true;
+			} catch (InputMismatchException | IllegalArgumentException ime) {
+				System.err.println("Please enter numeric value.");
+			}
+
+			ScannerUtil.consoleReader().clearReader();
+		}while(!success);
+
+
 		return readVal;
 	}
 	

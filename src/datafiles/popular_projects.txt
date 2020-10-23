@@ -4,11 +4,11 @@ New payment gateway to be integrated with existing e-commerce solution for all p
 Own4
 W 3 P 4 N 2 A 1
 
-Product Design
-Pr7
-No Description Available
-Own7
-W 3 P 4 N 2 A 1
+Customer Relationship Management (CRM)
+Pr1
+CRM will be developed by a team of 4 using Yii framework
+Own1
+W 4 P 3 N 2 A 1
 
 Brand Website Development
 Pr5

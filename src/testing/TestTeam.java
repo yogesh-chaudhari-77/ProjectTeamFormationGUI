@@ -7,7 +7,6 @@ import model.entities.Team;
 import model.exceptions.*;
 import org.junit.*;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -23,9 +22,6 @@ import java.util.LinkedHashMap;
  */
 public class TestTeam {
 
-
-	// https://stackoverflow.com/questions/6415728/junit-testing-with-simulated-user-input
-	InputStream sysInputBk = null;
 	ProjectTeamFormationMain pjT = null;
 
 	private LinkedHashMap<String, Project> shortListedProjectsList = new LinkedHashMap<>();
@@ -51,23 +47,8 @@ public class TestTeam {
 	@Before
 	public void setUp() throws Exception {
 
-		//pjT = new ProjectTeamFormationMain();
-		// pjT.loadDataFromFiles();
-
-		shortListedProjectsList.put("Pr1", new Project("Pr1", "Test Project 1", "Pr1 - Sample Project Description", "Own1", 4, 3, 2, 1, 10));
-		shortListedProjectsList.put("Pr2", new Project("Pr2", "Test Project 3", "Pr2 - Sample Project Description", "Own2", 3, 4, 2, 1, 9));
-		shortListedProjectsList.put("Pr3", new Project("Pr3", "Test Project 3", "Pr3 - Sample Project Description", "Own3", 4, 2, 1, 3, 8));
-
-		studentsList.put("s1", new Student("s1", 4, 3, 2, 1, "Pr1", "Pr2", "Pr3", "Pr4", "A", "s6", "s11"));
-		studentsList.put("s2", new Student("s2", 4, 3, 2, 1, "Pr1", "Pr2", "Pr3", "Pr3", "B", "s12", "s13"));
-		studentsList.put("s3", new Student("s3", 3, 4, 1, 2, "Pr4", "Pr3", "Pr1", "Pr2", "C", "s13", "s14"));
-		studentsList.put("s4", new Student("s4", 2, 4, 3, 1, "Pr1", "Pr2", "Pr6", "Pr5", "D", "s13", "s14"));
-		studentsList.put("s5", new Student("s5", 3, 2, 1, 4, "Pr4", "Pr3", "Pr6", "Pr7", "A", "", ""));
-		studentsList.put("s6", new Student("s6", 1, 2, 3, 4, "Pr4", "Pr3", "Pr6", "Pr7", "B", "", ""));
-		studentsList.put("s7", new Student("s7", 2, 1, 4, 3, "Pr4", "Pr3", "Pr6", "Pr7", "C", "s1", ""));
-		studentsList.put("s8", new Student("s8", 1, 3, 4, 2, "Pr4", "Pr3", "Pr6", "Pr7", "D", "s20", ""));
-		studentsList.put("s9", new Student("s9", 3, 4, 1, 2, "Pr4", "Pr3", "Pr6", "Pr7", "C", "s14", ""));
-		studentsList.put("s10", new Student("s10", 3, 4, 1, 2, "Pr4", "Pr3", "Pr6", "Pr7", "C", "s11", ""));
+		pjT = new ProjectTeamFormationMain();
+		loadTestData();
 	}
 
 	/**
@@ -97,7 +78,7 @@ public class TestTeam {
 		tempTeam.addMembers(projRef, selectedStudents);
 
 		// Testing if the new team has been added to the list
-		Assert.assertEquals("Members size should be 0", 4, tempTeam.getMembers().size());
+		Assert.assertEquals("Members size should be 4", 4, tempTeam.getMembers().size());
 	}
 	
 	
@@ -333,5 +314,25 @@ public class TestTeam {
 
 	private HashMap<String, Student> getStudentsList(){
 		return this.studentsList;
+	}
+
+	/**
+	 * Prepares the dummy data that is required for performing this test.
+	 */
+	public void loadTestData(){
+		shortListedProjectsList.put("Pr1", new Project("Pr1", "Test Project 1", "Pr1 - Sample Project Description", "Own1", 4, 3, 2, 1, 10));
+		shortListedProjectsList.put("Pr2", new Project("Pr2", "Test Project 3", "Pr2 - Sample Project Description", "Own2", 3, 4, 2, 1, 9));
+		shortListedProjectsList.put("Pr3", new Project("Pr3", "Test Project 3", "Pr3 - Sample Project Description", "Own3", 4, 2, 1, 3, 8));
+
+		studentsList.put("s1", new Student("s1", 4, 3, 2, 1, "Pr1", "Pr2", "Pr3", "Pr4", "A", "s6", "s11"));
+		studentsList.put("s2", new Student("s2", 4, 3, 2, 1, "Pr1", "Pr2", "Pr3", "Pr3", "B", "s12", "s13"));
+		studentsList.put("s3", new Student("s3", 3, 4, 1, 2, "Pr4", "Pr3", "Pr1", "Pr2", "C", "s13", "s14"));
+		studentsList.put("s4", new Student("s4", 2, 4, 3, 1, "Pr1", "Pr2", "Pr6", "Pr5", "D", "s13", "s14"));
+		studentsList.put("s5", new Student("s5", 3, 2, 1, 4, "Pr4", "Pr3", "Pr6", "Pr7", "A", "", ""));
+		studentsList.put("s6", new Student("s6", 1, 2, 3, 4, "Pr4", "Pr3", "Pr6", "Pr7", "B", "", ""));
+		studentsList.put("s7", new Student("s7", 2, 1, 4, 3, "Pr4", "Pr3", "Pr6", "Pr7", "C", "s1", ""));
+		studentsList.put("s8", new Student("s8", 1, 3, 4, 2, "Pr4", "Pr3", "Pr6", "Pr7", "D", "s20", ""));
+		studentsList.put("s9", new Student("s9", 3, 4, 1, 2, "Pr4", "Pr3", "Pr6", "Pr7", "C", "s14", ""));
+		studentsList.put("s10", new Student("s10", 3, 4, 1, 2, "Pr4", "Pr3", "Pr6", "Pr7", "C", "s11", ""));
 	}
 }
